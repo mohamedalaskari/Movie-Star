@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Genre;
+use App\Models\Series;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +19,10 @@ class SeriesFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'discription' => fake()->text(),
+            'num_of_seasons' => fake()->randomNumber(1),
+            'series_name' => fake()->randomNumber(1),
+            'genre_id' => Genre::all()->random()->id,
         ];
     }
 }

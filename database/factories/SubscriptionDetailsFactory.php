@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Subscription;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +19,8 @@ class SubscriptionDetailsFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => User::all()->random()->id,
+            'subscription_id' => Subscription::all()->random()->id,
         ];
     }
 }

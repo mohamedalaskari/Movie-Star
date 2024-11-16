@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Matches;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +19,8 @@ class MatchWatchingFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => User::all()->random()->id,
+            'matches_id' => Matches::all()->random()->id,
         ];
     }
 }

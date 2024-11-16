@@ -9,6 +9,9 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
+
+
+    //add country in gerne 
     public function up(): void
     {
         Schema::create('countries', function (Blueprint $table) {

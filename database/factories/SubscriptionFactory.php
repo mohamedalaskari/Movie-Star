@@ -17,7 +17,10 @@ class SubscriptionFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->name(),
+            'period' => fake()->date(),
+            'price' => fake()->randomFloat(3),
+            'discount' => fake()->randomFloat(4, 0, 1),
         ];
     }
 }

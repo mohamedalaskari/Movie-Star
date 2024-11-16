@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Episode;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +19,8 @@ class EpisodeWatchingFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => User::all()->random()->id,
+            'episode_id' => Episode::all()->random()->id,
         ];
     }
 }

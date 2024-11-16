@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Season;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,11 @@ class EpisodeFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'episodes_num' => fake()->randomNumber(2),
+            'description' => fake()->text(),
+            'episodes_url' => fake()->url(),
+            'season_id' => Season::all()->random()->id,
+
         ];
     }
 }

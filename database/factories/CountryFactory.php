@@ -17,7 +17,35 @@ class CountryFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'country' => fake()->randomElement([
+                'Cairo',
+                'Giza',
+                'Alexandria',
+                'Qalyubia',
+                'Sharqia',
+                'Dakahlia',
+                'Menoufia',
+                'Gharbia',
+                'Kafr El Sheikh',
+                'Damietta',
+                'Port Said',
+                'Ismailia',
+                'Suez',
+                'Beheira',
+                'Matrouh',
+                'Fayoum',
+                'Beni Suef',
+                'Minya',
+                'Assiut',
+                'Sohag',
+                'Qena',
+                'Luxor',
+                'Aswan',
+                'Red Sea',
+                'New Valley',
+                'North Sinai',
+                'South Sinai',
+            ])
         ];
     }
 }
