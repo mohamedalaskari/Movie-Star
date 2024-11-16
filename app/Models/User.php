@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -45,4 +47,28 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function country() : BelongsTo
+    {
+        return $this->belongsTo(Country::class);
+    }
+    public function subscriptions() : HasMany
+    {
+        return $this->hasMany(Subscription::class);
+    }
+    
+    public function filmwatchings() : HasMany
+    {
+        return $this->hasMany(FilmWatching::class);
+    }
+    public function eposodewatchings() : HasMany
+    {
+        return $this->hasMany(EpisodeWatching::class);
+    }
+    public function matchwatchings() : HasMany
+    {
+        return $this->hasMany(MatchWatching::class);
+    }
+
+
 }
