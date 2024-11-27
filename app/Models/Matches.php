@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Matches extends Model
 {
     /** @use HasFactory<\Database\Factories\MatchesFactory> */
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'match_url',
@@ -21,6 +21,11 @@ class Matches extends Model
         'team_2',
         'champion',
         'result',
+    ];
+    protected $hidden = [
+        'created_at',
+        'deleted_at',
+        'updated_at',
     ];
     public function match_watchings(): HasMany
     {

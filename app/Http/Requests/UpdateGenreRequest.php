@@ -11,7 +11,7 @@ class UpdateGenreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class UpdateGenreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'genre' => 'required|exists:genres,genre|max:50',
+            'genre_new' => 'required|unique:genres,genre|max:50'
         ];
     }
 }

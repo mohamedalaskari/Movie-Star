@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Subscription;
 use App\Http\Requests\StoreSubscriptionRequest;
+use App\Http\Requests\StoreWhereSubscriptionRequest;
 use App\Http\Requests\UpdateSubscriptionRequest;
+use Illuminate\Support\Facades\DB;
 
 class SubscriptionController extends Controller
 {
@@ -30,14 +32,14 @@ class SubscriptionController extends Controller
      */
     public function store(StoreSubscriptionRequest $request)
     {
-     $request=$request->validated();
-     //insert data
-     $insert=Subscription::create($request);
-     if ($insert) {
-        return $this->response(code: 201, data: $insert);
-    } else {
-        return $this->response(code: 400, data: 'Can\'t create ');
-    }
+        $request = $request->validated();
+        //insert data
+        $insert = Subscription::create($request);
+        if ($insert) {
+            return $this->response(code: 201, data: $insert);
+        } else {
+            return $this->response(code: 400, data: 'Can\'t create ');
+        }
     }
 
     /**
@@ -61,9 +63,21 @@ class SubscriptionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSubscriptionRequest $request, Subscription $subscription)
+    public function update(UpdateSubscriptionRequest $request, Subscription $subscription, StoreWhereSubscriptionRequest $Subscription)
     {
-        //
+        //validate
+        $request = $request->validated();
+        $Subscription = $Subscription->validated();
+        $subscription_id = Subscription::all()->where('name', $subscription['name_old']);
+        return $subscription_id;
+        //updata data
+        //$update = DB::table('subscriptions')->where('name', $subscription['name_old'])->update($request);
+        //check if update
+        // if ($update) {
+        //     return $this->response(code: 200, data: $update);
+        // } else {
+        //     return $this->response(code: 201);
+        // }
     }
 
     /**
@@ -83,12 +97,12 @@ class SubscriptionController extends Controller
         $deleted = $subscription->onlyTrashed()->get();
         return $this->response(code: 302, data: $deleted);
     }
-    public function restore( $subscription)
+    public function restore($subscription)
     {
         $subscription = Subscription::withTrashed()->where('id', $subscription)->restore();
         return $this->response(code: 202, data: $subscription);
     }
-    public function delete_from_trash( $subscription)
+    public function delete_from_trash($subscription)
     {
         $subscription  = Subscription::where('id', $subscription)->forceDelete();
         return $this->response(code: 202, data: $subscription);

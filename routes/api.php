@@ -73,6 +73,7 @@ Route::prefix('Genres')->group(function () {
     Route::get('/deleted',  [GenreController::class, 'deleted'])->middleware('auth:sanctum');
     Route::get('/', [GenreController::class, 'index'])->middleware('auth:sanctum');
     Route::get('/{genre}', [GenreController::class, 'show'])->middleware('auth:sanctum');
+    Route::put('/update', [GenreController::class, 'update'])->middleware('auth:sanctum');
     Route::post('/store', [GenreController::class, 'store'])->middleware('auth:sanctum');
     Route::get('restore/{genre}',  [GenreController::class, 'restore'])->middleware('auth:sanctum');
     Route::delete('delete/{genre}', [GenreController::class, 'delete'])->middleware('auth:sanctum');
@@ -138,6 +139,7 @@ Route::prefix('FilmWatchings')->group(function () {
 Route::prefix('Matches')->group(function () {
     Route::get('/deleted',  [MatchesController::class, 'deleted'])->middleware('auth:sanctum');
     Route::get('/', [MatchesController::class, 'index'])->middleware('auth:sanctum');
+    Route::put('/update', [MatchesController::class, 'update'])->middleware('auth:sanctum');
     Route::post('/store', [MatchesController::class, 'store'])->middleware('auth:sanctum');
     Route::get('/{matches}', [MatchesController::class, 'show'])->middleware('auth:sanctum');
     Route::get('restore/{matches}',  [MatchesController::class, 'restore'])->middleware('auth:sanctum');
@@ -160,6 +162,7 @@ Route::prefix('Subscriptions')->group(function () {
     Route::get('/deleted',  [SubscriptionController::class, 'deleted'])->middleware('auth:sanctum');
     Route::get('/', [SubscriptionController::class, 'index'])->middleware('auth:sanctum');
     Route::post('/store', [SubscriptionController::class, 'store'])->middleware('auth:sanctum');
+    Route::put('/update', [SubscriptionController::class, 'update'])->middleware('auth:sanctum');
     Route::get('/{subscription}', [SubscriptionController::class, 'show'])->middleware('auth:sanctum');
     Route::get('restore/{subscription}',  [SubscriptionController::class, 'restore'])->middleware('auth:sanctum');
     Route::delete('delete/{subscription}', [SubscriptionController::class, 'delete'])->middleware('auth:sanctum');

@@ -10,16 +10,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Genre extends Model
 {
     /** @use HasFactory<\Database\Factories\GenreFactory> */
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable =[
+    protected $fillable = [
         'genre'
     ];
-    public function films() : HasMany
+    protected $hidden = [
+        'created_at',
+        'deleted_at',
+        'updated_at',
+    ];
+    public function films(): HasMany
     {
         return $this->hasMany(Film::class);
     }
-    public function series() : HasMany
+    public function series(): HasMany
     {
         return $this->hasMany(Series::class);
     }

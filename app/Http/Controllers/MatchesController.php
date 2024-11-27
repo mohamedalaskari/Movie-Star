@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Matches;
 use App\Http\Requests\StoreMatchesRequest;
+use App\Http\Requests\StoreWhereMatchRequest;
 use App\Http\Requests\UpdateMatchesRequest;
+use Illuminate\Support\Facades\DB;
 
 class MatchesController extends Controller
 {
@@ -34,10 +36,10 @@ class MatchesController extends Controller
         //insert
         $insert = Matches::create($request);
         //check if insert
-        if($insert){
-            return $this->response(code:200 , data:$insert);
-        }else{
-            return $this->response(code:201);
+        if ($insert) {
+            return $this->response(code: 200, data: $insert);
+        } else {
+            return $this->response(code: 201);
         }
     }
 
@@ -62,9 +64,19 @@ class MatchesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateMatchesRequest $request, Matches $matches)
+    public function update(UpdateMatchesRequest $request, Matches $matches, StoreWhereMatchRequest $Match)
     {
-        //
+        //validate
+        $request = $request->validated();
+        $Match = $Match->validated();
+        //update data
+        $update = DB::table('matches')->where([['match_url', $Match['match_url_old']], ['champion', $Match['champion_old']]])->update($request);
+        //check if update
+        if ($update) {
+            return $this->response(code: 200, data: $update);
+        } else {
+            return $this->response(code: 201);
+        }
     }
 
     /**
@@ -84,12 +96,12 @@ class MatchesController extends Controller
         $deleted = $matches->onlyTrashed()->get();
         return $this->response(code: 302, data: $deleted);
     }
-    public function restore( $matches)
+    public function restore($matches)
     {
         $matches = Matches::withTrashed()->where('id', $matches)->restore();
         return $this->response(code: 202, data: $matches);
     }
-    public function delete_from_trash( $matches)
+    public function delete_from_trash($matches)
     {
         $matches  = Matches::where('id',  $matches)->forceDelete();
         return $this->response(code: 202, data: $matches);

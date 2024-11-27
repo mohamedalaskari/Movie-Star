@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Genre;
 use App\Http\Requests\StoreGenreRequest;
 use App\Http\Requests\UpdateGenreRequest;
+use Illuminate\Support\Facades\DB;
 
 class GenreController extends Controller
 {
@@ -34,11 +35,10 @@ class GenreController extends Controller
         //insert
         $insert = Genre::create($request);
         //check if insert
-        if($insert)
-        {
-            return $this->response(code:200 , data:$insert);
-        }else{
-            return $this->response(code:201);
+        if ($insert) {
+            return $this->response(code: 200, data: $insert);
+        } else {
+            return $this->response(code: 201);
         }
     }
 
@@ -65,7 +65,20 @@ class GenreController extends Controller
      */
     public function update(UpdateGenreRequest $request, Genre $genre)
     {
-        //
+        //validate
+        $request = $request->validated();
+        //genre_id
+        $genre_id = Genre::all()->where('genre', $request['genre'])->first()->id;
+        //update data
+        $update = DB::table('genres')->where('id', $genre_id)->update([
+            'genre' => $request['genre_new'],
+        ]);
+        //check if update
+        if ($update) {
+            return $this->response(code: 200, data: $update);
+        } else {
+            return $this->response(code: 201);
+        }
     }
 
     /**
@@ -85,12 +98,12 @@ class GenreController extends Controller
         $deleted = $genre->onlyTrashed()->get();
         return $this->response(code: 302, data: $deleted);
     }
-    public function restore( $genre)
+    public function restore($genre)
     {
         $genre = Genre::withTrashed()->where('id', $genre)->restore();
         return $this->response(code: 202, data: $genre);
     }
-    public function delete_from_trash( $genre)
+    public function delete_from_trash($genre)
     {
         $genre  = Genre::where('id', $genre)->forceDelete();
         return $this->response(code: 202, data: $genre);
