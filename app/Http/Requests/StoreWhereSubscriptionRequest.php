@@ -22,7 +22,7 @@ class StoreWhereSubscriptionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name_old' => 'required|max:40|string'
+            'name_old' => 'required|max:40|string|exists:subscriptions,name'
         ];
     }
 }

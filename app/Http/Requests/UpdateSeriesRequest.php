@@ -11,7 +11,7 @@ class UpdateSeriesRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class UpdateSeriesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'discription' => 'required|max:1024|string',
+            'series_name' => 'required|max:50|string',
         ];
     }
 }

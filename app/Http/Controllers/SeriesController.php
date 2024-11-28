@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Series;
 use App\Http\Requests\StoreSeriesRequest;
 use App\Http\Requests\StoreWhereGenreRequest;
+use App\Http\Requests\StoreWhereSeriesRequest;
 use App\Http\Requests\UpdateSeriesRequest;
 use App\Models\Genre;
+use Illuminate\Support\Facades\DB;
 
 class SeriesController extends Controller
 {
@@ -68,9 +70,25 @@ class SeriesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSeriesRequest $request, Series $series)
+    public function update(UpdateSeriesRequest $request, StoreWhereSeriesRequest $Series, StoreWhereGenreRequest $genre)
     {
-        //
+        //validate
+        $request = $request->validated();
+        $genre = $genre->validated();
+        $Series = $Series->validated();
+        //genre_id
+        $genre_id = Genre::all()->where('genre', $genre['genre'])->first()->id;
+        $request['genre_id'] = $genre_id;
+        //Series_id
+        $Series_id = Series::all()->where('series_name', $Series['series_name'])->first()->id;
+        //update data
+        $update = DB::table('series')->where('id', $Series_id)->update($request);
+        //check if update
+        if ($update) {
+            return $this->response(code: 201, data: $update);
+        } else {
+            return $this->response(code: 201);
+        }
     }
 
     /**
@@ -90,12 +108,12 @@ class SeriesController extends Controller
         $deleted = $series->onlyTrashed()->get();
         return $this->response(code: 302, data: $deleted);
     }
-    public function restore( $series)
+    public function restore($series)
     {
         $series = Series::withTrashed()->where('id', $series)->restore();
         return $this->response(code: 202, data: $series);
     }
-    public function delete_from_trash( $series)
+    public function delete_from_trash($series)
     {
         $series  = Series::where('id', $series)->forceDelete();
         return $this->response(code: 202, data: $series);

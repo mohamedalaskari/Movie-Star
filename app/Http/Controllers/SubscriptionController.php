@@ -63,21 +63,20 @@ class SubscriptionController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSubscriptionRequest $request, Subscription $subscription, StoreWhereSubscriptionRequest $Subscription)
+    public function update(UpdateSubscriptionRequest $request,  StoreWhereSubscriptionRequest $Subscription)
     {
         //validate
         $request = $request->validated();
         $Subscription = $Subscription->validated();
-        $subscription_id = Subscription::all()->where('name', $subscription['name_old']);
-        return $subscription_id;
-        //updata data
-        //$update = DB::table('subscriptions')->where('name', $subscription['name_old'])->update($request);
+        $subscription_id = Subscription::all()->where('name', $Subscription['name_old'])->first()->id;
+        //updata data;
+        $update = DB::table('subscriptions')->where('id',$subscription_id )->update($request);
         //check if update
-        // if ($update) {
-        //     return $this->response(code: 200, data: $update);
-        // } else {
-        //     return $this->response(code: 201);
-        // }
+        if ($update) {
+            return $this->response(code: 201, data: $update);
+        } else {
+            return $this->response(code: 201);
+        }
     }
 
     /**

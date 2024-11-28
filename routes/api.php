@@ -15,6 +15,7 @@ use App\Http\Controllers\SeriesController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\SubscriptionDetailsController;
 use App\Http\Controllers\UserController;
+use App\Models\SubscriptionDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -85,6 +86,7 @@ Route::prefix('Series')->group(function () {
     Route::get('/deleted', [SeriesController::class, 'deleted'])->middleware('auth:sanctum');
     Route::get('/', [SeriesController::class, 'index'])->middleware('auth:sanctum');
     Route::post('/store', [SeriesController::class, 'store'])->middleware('auth:sanctum');
+    Route::put('/update', [SeriesController::class, 'update'])->middleware('auth:sanctum');
     Route::get('/{series}', [SeriesController::class, 'show'])->middleware('auth:sanctum');
     Route::get('restore/{series}', [SeriesController::class, 'restore'])->middleware('auth:sanctum');
     Route::delete('delete/{series}', [SeriesController::class, 'delete'])->middleware('auth:sanctum');
@@ -172,6 +174,9 @@ Route::prefix('Subscriptions')->group(function () {
 //subscriptiondetails
 Route::prefix('SubscriptionDetails')->group(function () {
     Route::get('/deleted',  [SubscriptionDetailsController::class, 'deleted'])->middleware('auth:sanctum');
+    Route::post('/pay',   [SubscriptionDetailsController::class, 'pay'])->middleware('auth:sanctum');
+    Route::post('/store', [SubscriptionDetailsController::class, 'store'])->middleware('auth:sanctum')->name('success');
+    Route::post('/cancel', [SubscriptionDetailsController::class, 'cancel'])->middleware('auth:sanctum')->name('cancel');
     Route::get('/', [SubscriptionDetailsController::class, 'index'])->middleware('auth:sanctum');
     Route::get('/{subscriptionDetails}', [SubscriptionDetailsController::class, 'show'])->middleware('auth:sanctum');
     Route::get('restore/{subscriptionDetails}',  [SubscriptionDetailsController::class, 'restore'])->middleware('auth:sanctum');
