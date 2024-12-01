@@ -18,7 +18,7 @@ class SubscriptionFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'period' => fake()->date(),
+            'period' => fake()->randomNumber(2),
             'price' => fake()->randomFloat(3),
             'discount' => fake()->randomFloat(4, 0, 1),
         ];

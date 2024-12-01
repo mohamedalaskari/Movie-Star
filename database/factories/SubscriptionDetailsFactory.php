@@ -21,6 +21,7 @@ class SubscriptionDetailsFactory extends Factory
         return [
             'user_id' => User::all()->random()->id,
             'subscription_id' => Subscription::all()->random()->id,
+            'expiry_date' => fake()->date(),
         ];
     }
 }

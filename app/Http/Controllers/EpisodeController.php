@@ -74,9 +74,13 @@ class EpisodeController extends Controller
      */
     public function show(Episode $episode)
     {
+        if ($this->Subscripe()) {
         $id = $episode->id;
         $episode = Episode::with('seasons', 'episode_watchings')->find($id);
         return $this->response(code: 200, data: $episode);
+    }else{
+        return 'you can\'t watch this episode untill pay it';
+    }
     }
 
     /**

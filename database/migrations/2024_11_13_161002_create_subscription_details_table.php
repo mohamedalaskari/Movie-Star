@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->constrained();
             $table->foreignIdFor(Subscription::class)->constrained();
+            $table->date('expiry_date');
             $table->timestamps();
             $table->softDeletes()->nullable();
         });

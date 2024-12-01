@@ -15,7 +15,6 @@ use App\Http\Controllers\SeriesController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\SubscriptionDetailsController;
 use App\Http\Controllers\UserController;
-use App\Models\SubscriptionDetails;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -63,6 +62,7 @@ Route::prefix('Episodes')->group(function () {
 Route::prefix('EpisodeWatchings')->group(function () {
     Route::get('/deleted', [EpisodeWatchingController::class, 'deleted'])->middleware('auth:sanctum');
     Route::get('/', [EpisodeWatchingController::class, 'index'])->middleware('auth:sanctum');
+    Route::post('/store', [EpisodeWatchingController::class, 'store'])->middleware('auth:sanctum');
     Route::get('/{episodeWatching}', [EpisodeWatchingController::class, 'show'])->middleware('auth:sanctum');
     Route::get('restore/{episodeWatching}', [EpisodeWatchingController::class, 'restore'])->middleware('auth:sanctum');
     Route::delete('delete/{episodeWatching}', [EpisodeWatchingController::class, 'delete'])->middleware('auth:sanctum');
@@ -131,6 +131,7 @@ Route::prefix('Films')->group(function () {
 Route::prefix('FilmWatchings')->group(function () {
     Route::get('/deleted', [FilmWatchingController::class, 'deleted'])->middleware('auth:sanctum');
     Route::get('/', [FilmWatchingController::class, 'index'])->middleware('auth:sanctum');
+    Route::post('/store', [FilmWatchingController::class, 'store'])->middleware('auth:sanctum');
     Route::get('/{filmWatching}', [FilmWatchingController::class, 'show'])->middleware('auth:sanctum');
     Route::get('restore/{filmWatching}',  [FilmWatchingController::class, 'restore'])->middleware('auth:sanctum');
     Route::delete('delete/{filmWatching}', [FilmWatchingController::class, 'delete'])->middleware('auth:sanctum');
@@ -153,6 +154,7 @@ Route::prefix('Matches')->group(function () {
 Route::prefix('MatchWatchings')->group(function () {
     Route::get('/deleted',  [MatchWatchingController::class, 'deleted'])->middleware('auth:sanctum');
     Route::get('/', [MatchWatchingController::class, 'index'])->middleware('auth:sanctum');
+    Route::post('/store', [MatchWatchingController::class, 'store'])->middleware('auth:sanctum');
     Route::get('/{matchWatching}', [MatchWatchingController::class, 'show'])->middleware('auth:sanctum');
     Route::get('restore/{matchWatching}',  [MatchWatchingController::class, 'restore'])->middleware('auth:sanctum');
     Route::delete('delete/{matchWatching}', [MatchWatchingController::class, 'delete'])->middleware('auth:sanctum');

@@ -48,9 +48,13 @@ class MatchesController extends Controller
      */
     public function show(Matches $matches)
     {
+        if ($this->Subscripe()) {
         $id = $matches->id;
         $matches = Matches::with('match_watchings')->find($id);
         return $this->response(code: 200, data: $matches);
+    }else{
+        return 'you can\'t watch this episode untill pay it';
+    }
     }
 
     /**

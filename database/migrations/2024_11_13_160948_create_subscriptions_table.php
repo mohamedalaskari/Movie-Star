@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->date('period');
+            $table->integer('period');
             $table->float('price');
             $table->float('discount');
             $table->timestamps();

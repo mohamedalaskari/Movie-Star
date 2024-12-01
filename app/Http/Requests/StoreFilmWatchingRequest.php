@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreFilmWatchingRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class StoreFilmWatchingRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return Auth::check();
     }
 
     /**
@@ -22,7 +23,7 @@ class StoreFilmWatchingRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'film_id'=>'required|regex:/\d/|exists:films,id',
         ];
     }
 }

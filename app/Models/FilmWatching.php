@@ -12,6 +12,15 @@ class FilmWatching extends Model
 {
     /** @use HasFactory<\Database\Factories\FilmWatchingFactory> */
     use HasFactory,SoftDeletes;
+    protected $fillable = [
+        'user_id',
+        'film_id',
+    ];
+    protected $hidden = [
+        'created_at',
+        'deleted_at',
+        'updated_at',
+    ];
     public function users(): BelongsTo
     {
         return $this->BelongsTo(User::class);

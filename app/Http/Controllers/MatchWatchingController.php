@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MatchWatching;
 use App\Http\Requests\StoreMatchWatchingRequest;
 use App\Http\Requests\UpdateMatchWatchingRequest;
+use Illuminate\Support\Facades\Auth;
 
 class MatchWatchingController extends Controller
 {
@@ -30,7 +31,18 @@ class MatchWatchingController extends Controller
      */
     public function store(StoreMatchWatchingRequest $request)
     {
-        //
+        if ($this->Subscripe()) {
+            //validate
+            $request=$request->validated();
+            //user_id
+            $user_id=Auth::user()->id;
+            $request['user_id']=$user_id;
+            //insert data
+            $insert=MatchWatching::create($request);
+            return $this->response(code:201,data:$insert);
+        }else{
+            return $this->response(code:500,msg:'not payment');
+        }
     }
 
     /**

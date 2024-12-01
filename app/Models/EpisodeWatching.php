@@ -12,6 +12,15 @@ class EpisodeWatching extends Model
 {
     /** @use HasFactory<\Database\Factories\EpisodeWatchingFactory> */
     use HasFactory,SoftDeletes;
+    protected $fillable = [
+        'user_id',
+        'episode_id',
+    ];
+    protected $hidden = [
+        'created_at',
+        'deleted_at',
+        'updated_at',
+    ];
     public function users(): BelongsTo
     {
         return $this->BelongsTo(User::class);

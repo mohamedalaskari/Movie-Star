@@ -6,6 +6,9 @@ use App\Models\EpisodeWatching;
 use App\Http\Requests\StoreEpisodeWatchingRequest;
 use App\Http\Requests\UpdateEpisodeWatchingRequest;
 use App\Models\Episode;
+use App\Models\SubscriptionDetails;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class EpisodeWatchingController extends Controller
 {
@@ -26,12 +29,24 @@ class EpisodeWatchingController extends Controller
         //
     }
 
+
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreEpisodeWatchingRequest $request)
     {
-        
+        if ($this->Subscripe()) {
+            //validate
+            $request=$request->validated();
+            //user_id
+            $user_id=Auth::user()->id;
+            $request['user_id']=$user_id;
+            //insert data
+            $insert=EpisodeWatching::create($request);
+            return $this->response(code:201,data:$insert);
+        }else{
+            return $this->response(code:500,msg:'not payment');
+        }
     }
 
     /**
@@ -39,9 +54,9 @@ class EpisodeWatchingController extends Controller
      */
     public function show(EpisodeWatching $episodeWatching)
     {
-        $id = $episodeWatching->id;
-        $episodeWatching = EpisodeWatching::with('users', 'episodes')->find($id);
-        return $this->response(code: 200, data: $episodeWatching);
+            $id = $episodeWatching->id;
+            $episodeWatching = EpisodeWatching::with('users', 'episodes')->find($id);
+            return $this->response(code: 200, data: $episodeWatching);
     }
 
     /**
@@ -77,12 +92,12 @@ class EpisodeWatchingController extends Controller
         $deleted = $episodeWatching->onlyTrashed()->get();
         return $this->response(code: 302, data: $deleted);
     }
-    public function restore( $episodeWatching)
+    public function restore($episodeWatching)
     {
         $episodeWatching = EpisodeWatching::withTrashed()->where('id', $episodeWatching)->restore();
         return $this->response(code: 202, data: $episodeWatching);
     }
-    public function delete_from_trash( $episodeWatching)
+    public function delete_from_trash($episodeWatching)
     {
         $episodeWatching  = EpisodeWatching::where('id',  $episodeWatching)->forceDelete();
         return $this->response(code: 202, data: $episodeWatching);

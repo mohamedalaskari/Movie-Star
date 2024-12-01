@@ -12,6 +12,15 @@ class MatchWatching extends Model
 {
     /** @use HasFactory<\Database\Factories\MatchWatchingFactory> */
     use HasFactory,SoftDeletes;
+    protected $fillable = [
+        'user_id',
+        'matches_id',
+    ];
+    protected $hidden = [
+        'created_at',
+        'deleted_at',
+        'updated_at',
+    ];
     public function users(): BelongsTo
     {
         return $this->BelongsTo(User::class);

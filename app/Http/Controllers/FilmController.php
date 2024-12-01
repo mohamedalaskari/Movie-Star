@@ -55,9 +55,13 @@ class FilmController extends Controller
      */
     public function show(Film $film)
     {
+        if ($this->Subscripe()) {
         $id = $film->id;
         $film = Film::with('genres', 'film_watchings')->find($id);
         return $this->response(code: 200, data: $film);
+    }else{
+        return 'you can\'t watch this episode untill pay it';
+    }
     }
 
     /**
