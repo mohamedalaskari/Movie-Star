@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Country;
 use App\Http\Requests\StoreCountryRequest;
 use App\Http\Requests\UpdateCountryRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class CountryController extends Controller
@@ -14,8 +15,13 @@ class CountryController extends Controller
      */
     public function index()
     {
-        $country = Country::get();
-        return $this->response(code: 200, data: $country);
+
+        if (Auth::user()->block === 0) {
+            $country = Country::get();
+            return $this->response(code: 200, data: $country);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 
     /**
@@ -31,12 +37,16 @@ class CountryController extends Controller
      */
     public function store(StoreCountryRequest $request)
     {
-        $request = $request->validated();
-        $insert = Country::create($request);
-        if ($insert) {
-            return $this->response(code: 200, data: $insert);
+        if (Auth::user()->block === 0) {
+            $request = $request->validated();
+            $insert = Country::create($request);
+            if ($insert) {
+                return $this->response(code: 200, data: $insert);
+            } else {
+                return $this->response(code: 400, data: 'Can\'t create ');
+            }
         } else {
-            return $this->response(code: 400, data: 'Can\'t create ');
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
         }
     }
 
@@ -45,36 +55,40 @@ class CountryController extends Controller
      */
     public function show(Country $country)
     {
-        $id = $country->id;
-        $country = Country::with('users')->find($id);
-        return $this->response(code: 200, data: $country);
+        if (Auth::user()->block === 0) {
+            $id = $country->id;
+            $country = Country::with('users')->find($id);
+            return $this->response(code: 200, data: $country);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Country $country)
-    {
-
-    }
+    public function edit(Country $country) {}
 
     /**
      * Update the specified resource in storage.
      */
     public function update(UpdateCountryRequest $request, Country $country)
     {
-        $request=$request->validated();
-        //country_id
-        $country_id=Country::all()->where('country',$request['country'])->first()->id;
-        //update country
-        $update = DB::table('countries')->where('id', $country_id)->update([
-            'country'=>$request['country_update']
-        ]);
-        if($update)
-        {
-          return $this->response(code:201 , data: $update);
-        }else{
-          return $this->response(code:401 );
+        if (Auth::user()->block === 0) {
+            $request = $request->validated();
+            //country_id
+            $country_id = Country::all()->where('country', $request['country'])->first()->id;
+            //update country
+            $update = DB::table('countries')->where('id', $country_id)->update([
+                'country' => $request['country_update']
+            ]);
+            if ($update) {
+                return $this->response(code: 201, data: $update);
+            } else {
+                return $this->response(code: 401);
+            }
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
         }
     }
 
@@ -87,22 +101,38 @@ class CountryController extends Controller
     }
     public function restore(Country $country)
     {
-        $restore = Country::withTrashed()->where('id', $country)->restore();
-        return $this->response(code: 202, data: $restore);
+        if (Auth::user()->block === 0) {
+            $restore = Country::withTrashed()->where('id', $country)->restore();
+            return $this->response(code: 202, data: $restore);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
     public function delete(Country $country)
     {
-        $delete = $country->delete();
-        return $this->response(code: 202, data: $delete);
+        if (Auth::user()->block === 0) {
+            $delete = $country->delete();
+            return $this->response(code: 202, data: $delete);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
-    public function deleted( $country)
+    public function deleted($country)
     {
-        $deleted = $country->onlyTrashed()->get();
-        return $this->response(code: 302, data: $deleted);
+        if (Auth::user()->block === 0) {
+            $deleted = $country->onlyTrashed()->get();
+            return $this->response(code: 302, data: $deleted);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
-    public function delete_from_trash( $country)
+    public function delete_from_trash($country)
     {
-        $Country  = Country::where('id', $country)->forceDelete();
-        return $this->response(code: 202, data: $Country);
+        if (Auth::user()->block === 0) {
+            $Country  = Country::where('id', $country)->forceDelete();
+            return $this->response(code: 202, data: $Country);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 }

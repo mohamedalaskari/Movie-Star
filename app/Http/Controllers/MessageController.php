@@ -14,8 +14,12 @@ class MessageController extends Controller
      */
     public function index()
     {
-        $Message = Message::get();
-        return $this->response(code: 200, data: $Message);
+        if (Auth::user()->block === 0) {
+            $Message = Message::get();
+            return $this->response(code: 200, data: $Message);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 
     /**
@@ -31,16 +35,20 @@ class MessageController extends Controller
      */
     public function store(StoreMessageRequest $request)
     {
-        $request = $request->validated();
-        $user_id = Auth::user()->id;
-        $request['user_id'] = $user_id;
-        //insert
-        $insert = Message::create($request);
-        //check if insert
-        if($insert){
-            return $this->response(code:200 , data:$insert);
-        }else{
-            return $this->response(code:201);
+        if (Auth::user()->block === 0) {
+            $request = $request->validated();
+            $user_id = Auth::user()->id;
+            $request['user_id'] = $user_id;
+            //insert
+            $insert = Message::create($request);
+            //check if insert
+            if ($insert) {
+                return $this->response(code: 200, data: $insert);
+            } else {
+                return $this->response(code: 201);
+            }
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
         }
     }
 
@@ -49,9 +57,13 @@ class MessageController extends Controller
      */
     public function show(Message $message)
     {
-        $id = $message->id;
-        $message = Message::with('users')->find($id);
-        return $this->response(code: 200, data: $message);
+        if (Auth::user()->block === 0) {
+            $id = $message->id;
+            $message = Message::with('users')->find($id);
+            return $this->response(code: 200, data: $message);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 
     /**
@@ -79,22 +91,38 @@ class MessageController extends Controller
     }
     public function delete(Message $message)
     {
-        $delete = $message->delete();
-        return $this->response(code: 202, data: $delete);
+        if (Auth::user()->block === 0) {
+            $delete = $message->delete();
+            return $this->response(code: 202, data: $delete);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
     public function deleted(Message $message)
     {
-        $deleted = $message->onlyTrashed()->get();
-        return $this->response(code: 302, data: $deleted);
+        if (Auth::user()->block === 0) {
+            $deleted = $message->onlyTrashed()->get();
+            return $this->response(code: 302, data: $deleted);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
-    public function restore( $message)
+    public function restore($message)
     {
-        $message = Message::withTrashed()->where('id', $message)->restore();
-        return $this->response(code: 202, data: $message);
+        if (Auth::user()->block === 0) {
+            $message = Message::withTrashed()->where('id', $message)->restore();
+            return $this->response(code: 202, data: $message);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
-    public function delete_from_trash( $message)
+    public function delete_from_trash($message)
     {
-        $message  = Message::where('id',  $message)->forceDelete();
-        return $this->response(code: 202, data: $message);
+        if (Auth::user()->block === 0) {
+            $message  = Message::where('id',  $message)->forceDelete();
+            return $this->response(code: 202, data: $message);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Requests\StoreWhereGenreRequest;
 use App\Http\Requests\StoreWhereSeriesRequest;
 use App\Http\Requests\UpdateSeriesRequest;
 use App\Models\Genre;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class SeriesController extends Controller
@@ -17,8 +18,12 @@ class SeriesController extends Controller
      */
     public function index()
     {
-        $Series = Series::get();
-        return $this->response(code: 200, data: $Series);
+        if (Auth::user()->block === 0) {
+            $Series = Series::get();
+            return $this->response(code: 200, data: $Series);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 
     /**
@@ -33,19 +38,24 @@ class SeriesController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(StoreSeriesRequest $request, StoreWhereGenreRequest $genre)
-    {   //validate
-        $request = $request->validated();
-        $request['num_of_seasons'] = 0;
-        //genre_id
-        $genre = $genre->validated();
-        $genre_id = Genre::all()->where('genre', $genre['genre'])->first()->id;
-        $request['genre_id'] = $genre_id;
-        //insert data
-        $insert = Series::create($request);
-        if ($insert) {
-            return $this->response(code: 201, data: $insert);
+    {
+        if (Auth::user()->block === 0) {
+            //validate
+            $request = $request->validated();
+            $request['num_of_seasons'] = 0;
+            //genre_id
+            $genre = $genre->validated();
+            $genre_id = Genre::all()->where('genre', $genre['genre'])->first()->id;
+            $request['genre_id'] = $genre_id;
+            //insert data
+            $insert = Series::create($request);
+            if ($insert) {
+                return $this->response(code: 201, data: $insert);
+            } else {
+                return $this->response(code: 400, data: 'Can\'t create ');
+            }
         } else {
-            return $this->response(code: 400, data: 'Can\'t create ');
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
         }
     }
 
@@ -54,9 +64,13 @@ class SeriesController extends Controller
      */
     public function show(Series $series)
     {
-        $id = $series->id;
-        $series = series::with('genres', 'seasons')->find($id);
-        return $this->response(code: 200, data: $series);
+        if (Auth::user()->block === 0) {
+            $id = $series->id;
+            $series = series::with('genres', 'seasons')->find($id);
+            return $this->response(code: 200, data: $series);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 
     /**
@@ -72,22 +86,26 @@ class SeriesController extends Controller
      */
     public function update(UpdateSeriesRequest $request, StoreWhereSeriesRequest $Series, StoreWhereGenreRequest $genre)
     {
-        //validate
-        $request = $request->validated();
-        $genre = $genre->validated();
-        $Series = $Series->validated();
-        //genre_id
-        $genre_id = Genre::all()->where('genre', $genre['genre'])->first()->id;
-        $request['genre_id'] = $genre_id;
-        //Series_id
-        $Series_id = Series::all()->where('series_name', $Series['series_name'])->first()->id;
-        //update data
-        $update = DB::table('series')->where('id', $Series_id)->update($request);
-        //check if update
-        if ($update) {
-            return $this->response(code: 201, data: $update);
+        if (Auth::user()->block === 0) {
+            //validate
+            $request = $request->validated();
+            $genre = $genre->validated();
+            $Series = $Series->validated();
+            //genre_id
+            $genre_id = Genre::all()->where('genre', $genre['genre'])->first()->id;
+            $request['genre_id'] = $genre_id;
+            //Series_id
+            $Series_id = Series::all()->where('series_name', $Series['series_name'])->first()->id;
+            //update data
+            $update = DB::table('series')->where('id', $Series_id)->update($request);
+            //check if update
+            if ($update) {
+                return $this->response(code: 201, data: $update);
+            } else {
+                return $this->response(code: 201);
+            }
         } else {
-            return $this->response(code: 201);
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
         }
     }
 
@@ -100,22 +118,38 @@ class SeriesController extends Controller
     }
     public function delete(Series $series)
     {
-        $delete = $series->delete();
-        return $this->response(code: 202, data: $delete);
+        if (Auth::user()->block === 0) {
+            $delete = $series->delete();
+            return $this->response(code: 202, data: $delete);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
     public function deleted(Series $series)
     {
-        $deleted = $series->onlyTrashed()->get();
-        return $this->response(code: 302, data: $deleted);
+        if (Auth::user()->block === 0) {
+            $deleted = $series->onlyTrashed()->get();
+            return $this->response(code: 302, data: $deleted);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
     public function restore($series)
     {
-        $series = Series::withTrashed()->where('id', $series)->restore();
-        return $this->response(code: 202, data: $series);
+        if (Auth::user()->block === 0) {
+            $series = Series::withTrashed()->where('id', $series)->restore();
+            return $this->response(code: 202, data: $series);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
     public function delete_from_trash($series)
     {
-        $series  = Series::where('id', $series)->forceDelete();
-        return $this->response(code: 202, data: $series);
+        if (Auth::user()->block === 0) {
+            $series  = Series::where('id', $series)->forceDelete();
+            return $this->response(code: 202, data: $series);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 }

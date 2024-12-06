@@ -6,6 +6,7 @@ use App\Models\Subscription;
 use App\Http\Requests\StoreSubscriptionRequest;
 use App\Http\Requests\StoreWhereSubscriptionRequest;
 use App\Http\Requests\UpdateSubscriptionRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class SubscriptionController extends Controller
@@ -15,8 +16,12 @@ class SubscriptionController extends Controller
      */
     public function index()
     {
-        $Subscription = Subscription::get();
-        return $this->response(code: 200, data: $Subscription);
+        if (Auth::user()->block === 0) {
+            $Subscription = Subscription::get();
+            return $this->response(code: 200, data: $Subscription);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 
     /**
@@ -32,13 +37,17 @@ class SubscriptionController extends Controller
      */
     public function store(StoreSubscriptionRequest $request)
     {
-        $request = $request->validated();
-        //insert data
-        $insert = Subscription::create($request);
-        if ($insert) {
-            return $this->response(code: 201, data: $insert);
+        if (Auth::user()->block === 0) {
+            $request = $request->validated();
+            //insert data
+            $insert = Subscription::create($request);
+            if ($insert) {
+                return $this->response(code: 201, data: $insert);
+            } else {
+                return $this->response(code: 400, data: 'Can\'t create ');
+            }
         } else {
-            return $this->response(code: 400, data: 'Can\'t create ');
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
         }
     }
 
@@ -47,9 +56,13 @@ class SubscriptionController extends Controller
      */
     public function show(Subscription $subscription)
     {
-        $id = $subscription->id;
-        $subscription = Subscription::with('subscription_details')->find($id);
-        return $this->response(code: 200, data: $subscription);
+        if (Auth::user()->block === 0) {
+            $id = $subscription->id;
+            $subscription = Subscription::with('subscription_details')->find($id);
+            return $this->response(code: 200, data: $subscription);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 
     /**
@@ -65,17 +78,21 @@ class SubscriptionController extends Controller
      */
     public function update(UpdateSubscriptionRequest $request,  StoreWhereSubscriptionRequest $Subscription)
     {
-        //validate
-        $request = $request->validated();
-        $Subscription = $Subscription->validated();
-        $subscription_id = Subscription::all()->where('name', $Subscription['name_old'])->first()->id;
-        //updata data;
-        $update = DB::table('subscriptions')->where('id',$subscription_id )->update($request);
-        //check if update
-        if ($update) {
-            return $this->response(code: 201, data: $update);
+        if (Auth::user()->block === 0) {
+            //validate
+            $request = $request->validated();
+            $Subscription = $Subscription->validated();
+            $subscription_id = Subscription::all()->where('name', $Subscription['name_old'])->first()->id;
+            //updata data;
+            $update = DB::table('subscriptions')->where('id', $subscription_id)->update($request);
+            //check if update
+            if ($update) {
+                return $this->response(code: 201, data: $update);
+            } else {
+                return $this->response(code: 201);
+            }
         } else {
-            return $this->response(code: 201);
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
         }
     }
 
@@ -88,22 +105,38 @@ class SubscriptionController extends Controller
     }
     public function delete(Subscription $subscription)
     {
-        $delete = $subscription->delete();
-        return $this->response(code: 202, data: $delete);
+        if (Auth::user()->block === 0) {
+            $delete = $subscription->delete();
+            return $this->response(code: 202, data: $delete);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
     public function deleted(Subscription $subscription)
     {
-        $deleted = $subscription->onlyTrashed()->get();
-        return $this->response(code: 302, data: $deleted);
+        if (Auth::user()->block === 0) {
+            $deleted = $subscription->onlyTrashed()->get();
+            return $this->response(code: 302, data: $deleted);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
     public function restore($subscription)
     {
-        $subscription = Subscription::withTrashed()->where('id', $subscription)->restore();
-        return $this->response(code: 202, data: $subscription);
+        if (Auth::user()->block === 0) {
+            $subscription = Subscription::withTrashed()->where('id', $subscription)->restore();
+            return $this->response(code: 202, data: $subscription);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
     public function delete_from_trash($subscription)
     {
-        $subscription  = Subscription::where('id', $subscription)->forceDelete();
-        return $this->response(code: 202, data: $subscription);
+        if (Auth::user()->block === 0) {
+            $subscription  = Subscription::where('id', $subscription)->forceDelete();
+            return $this->response(code: 202, data: $subscription);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 }

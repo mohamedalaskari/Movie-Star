@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Genre;
 use App\Http\Requests\StoreGenreRequest;
 use App\Http\Requests\UpdateGenreRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class GenreController extends Controller
@@ -14,8 +15,12 @@ class GenreController extends Controller
      */
     public function index()
     {
-        $Genre = Genre::get();
-        return $this->response(code: 200, data: $Genre);
+        if (Auth::user()->block === 0) {
+            $Genre = Genre::get();
+            return $this->response(code: 200, data: $Genre);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 
     /**
@@ -31,14 +36,18 @@ class GenreController extends Controller
      */
     public function store(StoreGenreRequest $request)
     {
-        $request = $request->validated();
-        //insert
-        $insert = Genre::create($request);
-        //check if insert
-        if ($insert) {
-            return $this->response(code: 200, data: $insert);
+        if (Auth::user()->block === 0) {
+            $request = $request->validated();
+            //insert
+            $insert = Genre::create($request);
+            //check if insert
+            if ($insert) {
+                return $this->response(code: 200, data: $insert);
+            } else {
+                return $this->response(code: 201);
+            }
         } else {
-            return $this->response(code: 201);
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
         }
     }
 
@@ -47,9 +56,13 @@ class GenreController extends Controller
      */
     public function show(Genre $genre)
     {
-        $id = $genre->id;
-        $genre = Genre::with('series', 'films')->find($id);
-        return $this->response(code: 200, data: $genre);
+        if (Auth::user()->block === 0) {
+            $id = $genre->id;
+            $genre = Genre::with('series', 'films')->find($id);
+            return $this->response(code: 200, data: $genre);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 
     /**
@@ -65,19 +78,23 @@ class GenreController extends Controller
      */
     public function update(UpdateGenreRequest $request, Genre $genre)
     {
-        //validate
-        $request = $request->validated();
-        //genre_id
-        $genre_id = Genre::all()->where('genre', $request['genre'])->first()->id;
-        //update data
-        $update = DB::table('genres')->where('id', $genre_id)->update([
-            'genre' => $request['genre_new'],
-        ]);
-        //check if update
-        if ($update) {
-            return $this->response(code: 200, data: $update);
+        if (Auth::user()->block === 0) {
+            //validate
+            $request = $request->validated();
+            //genre_id
+            $genre_id = Genre::all()->where('genre', $request['genre'])->first()->id;
+            //update data
+            $update = DB::table('genres')->where('id', $genre_id)->update([
+                'genre' => $request['genre_new'],
+            ]);
+            //check if update
+            if ($update) {
+                return $this->response(code: 200, data: $update);
+            } else {
+                return $this->response(code: 201);
+            }
         } else {
-            return $this->response(code: 201);
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
         }
     }
 
@@ -90,22 +107,38 @@ class GenreController extends Controller
     }
     public function delete(Genre $genre)
     {
-        $delete = $genre->delete();
-        return $this->response(code: 202, data: $delete);
+        if (Auth::user()->block === 0) {
+            $delete = $genre->delete();
+            return $this->response(code: 202, data: $delete);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
     public function deleted(Genre $genre)
     {
-        $deleted = $genre->onlyTrashed()->get();
-        return $this->response(code: 302, data: $deleted);
+        if (Auth::user()->block === 0) {
+            $deleted = $genre->onlyTrashed()->get();
+            return $this->response(code: 302, data: $deleted);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
     public function restore($genre)
     {
-        $genre = Genre::withTrashed()->where('id', $genre)->restore();
-        return $this->response(code: 202, data: $genre);
+        if (Auth::user()->block === 0) {
+            $genre = Genre::withTrashed()->where('id', $genre)->restore();
+            return $this->response(code: 202, data: $genre);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
     public function delete_from_trash($genre)
     {
-        $genre  = Genre::where('id', $genre)->forceDelete();
-        return $this->response(code: 202, data: $genre);
+        if (Auth::user()->block === 0) {
+            $genre  = Genre::where('id', $genre)->forceDelete();
+            return $this->response(code: 202, data: $genre);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreEmailRequest;
 use App\Http\Requests\StoreLoginRequest;
 use App\Http\Requests\StoreRegisterRequest;
+use App\Http\Requests\StoreResetPasswordRequest;
 use App\Http\Requests\StoreWhereCountryRequest;
 use App\Models\Country;
 use App\Models\User;
@@ -11,7 +13,9 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
 use Laravel\Sanctum\PersonalAccessToken;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -68,5 +72,38 @@ class AuthController extends Controller
         } else {
             return $this->response(code: 404, msg: 'Cannot log out at the moment');
         }
+    }
+    public function forgot_password(StoreEmailRequest $storeEmailRequest)
+    {
+        $storeEmailRequest = $storeEmailRequest->validated();
+        $status = Password::sendResetLink(['email' => $storeEmailRequest['email']]);
+        return $status === Password::RESET_LINK_SENT ? response()->json([
+            'massege' => __($status)
+        ], 200) : response()->json([
+            'massege' => __($status)
+        ], 400);
+    }
+    public function reset_password(StoreResetPasswordRequest $request)
+    {
+        $request = $request->validated();
+        $status = Password::reset(
+            [
+                'email' => $request['email'],
+                'password' => $request['password'],
+                'token' => $request['token']
+            ],
+            function (User $user, string $password) {
+                $user->forceFill([
+                    "password" => Hash::make($password),
+                    "remember_token" => Str::random(60)
+                ])->save();
+            }
+        );
+
+        return $status === Password::RESET_LINK_SENT ? response()->json([
+            'massege' => __($status)
+        ], 200) : response()->json([
+            'massege' => __($status)
+        ], 400);
     }
 }

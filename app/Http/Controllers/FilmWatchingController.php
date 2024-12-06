@@ -14,8 +14,12 @@ class FilmWatchingController extends Controller
      */
     public function index()
     {
-        $FilmWatching = FilmWatching::get();
-        return $this->response(code: 200, data: $FilmWatching);
+        if (Auth::user()->block === 0) {
+            $FilmWatching = FilmWatching::get();
+            return $this->response(code: 200, data: $FilmWatching);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 
     /**
@@ -31,17 +35,21 @@ class FilmWatchingController extends Controller
      */
     public function store(StoreFilmWatchingRequest $request)
     {
-        if ($this->Subscripe()) {
-            //validate
-            $request=$request->validated();
-            //user_id
-            $user_id=Auth::user()->id;
-            $request['user_id']=$user_id;
-            //insert data
-            $insert=FilmWatching::create($request);
-            return $this->response(code:201,data:$insert);
-        }else{
-            return $this->response(code:500,msg:'not payment');
+        if (Auth::user()->block === 0) {
+            if ($this->Subscripe()) {
+                //validate
+                $request = $request->validated();
+                //user_id
+                $user_id = Auth::user()->id;
+                $request['user_id'] = $user_id;
+                //insert data
+                $insert = FilmWatching::create($request);
+                return $this->response(code: 201, data: $insert);
+            } else {
+                return $this->response(code: 500, msg: 'not payment');
+            }
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
         }
     }
 
@@ -50,9 +58,13 @@ class FilmWatchingController extends Controller
      */
     public function show(FilmWatching $filmWatching)
     {
-        $id = $filmWatching->id;
-        $filmWatching = FilmWatching::with('users', 'films')->find($id);
-        return $this->response(code: 200, data: $filmWatching);
+        if (Auth::user()->block === 0) {
+            $id = $filmWatching->id;
+            $filmWatching = FilmWatching::with('users', 'films')->find($id);
+            return $this->response(code: 200, data: $filmWatching);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 
     /**
@@ -80,22 +92,38 @@ class FilmWatchingController extends Controller
     }
     public function delete(FilmWatching $filmWatching)
     {
-        $delete = $filmWatching->delete();
-        return $this->response(code: 202, data: $delete);
+        if (Auth::user()->block === 0) {
+            $delete = $filmWatching->delete();
+            return $this->response(code: 202, data: $delete);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
     public function deleted(FilmWatching $filmWatching)
     {
-        $deleted = $filmWatching->onlyTrashed()->get();
-        return $this->response(code: 302, data: $deleted);
+        if (Auth::user()->block === 0) {
+            $deleted = $filmWatching->onlyTrashed()->get();
+            return $this->response(code: 302, data: $deleted);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
-    public function restore( $filmWatching)
+    public function restore($filmWatching)
     {
-        $filmWatching = FilmWatching::withTrashed()->where('id', $filmWatching)->restore();
-        return $this->response(code: 202, data: $filmWatching);
+        if (Auth::user()->block === 0) {
+            $filmWatching = FilmWatching::withTrashed()->where('id', $filmWatching)->restore();
+            return $this->response(code: 202, data: $filmWatching);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
-    public function delete_from_trash( $filmWatching)
+    public function delete_from_trash($filmWatching)
     {
-        $filmWatching  = FilmWatching::where('id', $filmWatching)->forceDelete();
-        return $this->response(code: 202, data: $filmWatching);
+        if (Auth::user()->block === 0) {
+            $filmWatching  = FilmWatching::where('id', $filmWatching)->forceDelete();
+            return $this->response(code: 202, data: $filmWatching);
+        } else {
+            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+        }
     }
 }
