@@ -16,12 +16,8 @@ class CountryController extends Controller
     public function index()
     {
 
-        if (Auth::user()->block === 0) {
-            $country = Country::get();
-            return $this->response(code: 200, data: $country);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $country = Country::get();
+        return $this->response(code: 200, data: $country);
     }
 
     /**
@@ -57,7 +53,7 @@ class CountryController extends Controller
     {
         if (Auth::user()->block === 0) {
             $id = $country->id;
-            $country = Country::with('users')->find($id);
+            $country = Country::with('users', 'films', 'series', 'matches')->find($id);
             return $this->response(code: 200, data: $country);
         } else {
             return $this->response(code: 401, msg: "You cannot log in because you are blocked.");

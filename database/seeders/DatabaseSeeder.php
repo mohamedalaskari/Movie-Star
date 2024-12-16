@@ -38,7 +38,7 @@ class DatabaseSeeder extends Seeder
         FilmWatching::factory(100)->create();
         Matches::factory(100)->create();
         MatchWatching::factory(100)->create();
-        Subscription::factory(100)->create();
+        Subscription::factory(3)->create();
         SubscriptionDetails::factory(100)->create();
     }
 }

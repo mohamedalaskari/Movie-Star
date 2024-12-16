@@ -14,14 +14,16 @@ return new class extends Migration
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('quality');
+            $table->boolean('popular');
             $table->integer('period');
+            $table->string('resolution');
             $table->float('price');
             $table->float('discount');
             $table->timestamps();
             $table->softDeletes()->nullable();
         });
     }
-
     /**
      * Reverse the migrations.
      */

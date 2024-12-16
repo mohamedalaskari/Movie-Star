@@ -11,11 +11,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Season extends Model
 {
     /** @use HasFactory<\Database\Factories\SeasonFactory> */
-    use HasFactory,SoftDeletes;
-    protected $fillable = [
-        'season_number',
-        'num_of_episodes',
-        'series_id',
+    use HasFactory, SoftDeletes;
+    protected $guarded = [
+        'created_at',
+        'deleted_at',
+        'updated_at',
     ];
     protected $hidden = [
         'created_at',

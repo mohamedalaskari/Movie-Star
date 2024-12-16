@@ -10,12 +10,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Subscription extends Model
 {
     /** @use HasFactory<\Database\Factories\SubscriptionFactory> */
-    use HasFactory,SoftDeletes;
-    protected $fillable = [
-        'name',
-        'period',
-        'price',
-        'discount',
+    use HasFactory, SoftDeletes;
+    protected  $guarded = [
+        'created_at',
+        'deleted_at',
+        'updated_at',
     ];
     protected $hidden = [
         'created_at',

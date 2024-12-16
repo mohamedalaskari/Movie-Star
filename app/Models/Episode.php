@@ -15,11 +15,10 @@ class Episode extends Model
     /** @use HasFactory<\Database\Factories\EpisodeFactory> */
     use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'episode_number',
-        'description',
-        'episode_url',
-        'season_id',
+    protected  $guarded = [
+        'created_at',
+        'deleted_at',
+        'updated_at',
     ];
     protected $hidden = [
         'created_at',

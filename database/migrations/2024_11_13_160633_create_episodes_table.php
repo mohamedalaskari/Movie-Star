@@ -14,6 +14,7 @@ return new class extends Migration
     {
         Schema::create('episodes', function (Blueprint $table) {
             $table->id();
+            $table->string('image');
             $table->string("episode_number");
             $table->string("description");
             $table->string("episode_url");

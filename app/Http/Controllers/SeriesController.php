@@ -66,7 +66,7 @@ class SeriesController extends Controller
     {
         if (Auth::user()->block === 0) {
             $id = $series->id;
-            $series = series::with('genres', 'seasons')->find($id);
+            $series = series::with('genres', 'seasons', 'countries')->find($id);
             return $this->response(code: 200, data: $series);
         } else {
             return $this->response(code: 401, msg: "You cannot log in because you are blocked.");

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Country;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,6 +14,12 @@ return new class extends Migration
     {
         Schema::create('matches', function (Blueprint $table) {
             $table->id();
+            $table->string('image');
+            $table->float('rate');
+            $table->boolean('top_10');
+            $table->string('quality');
+            $table->string('story');
+            $table->string('year_of_production');
             $table->string('match_url');
             $table->string('stadium');
             $table->string('team_1');
@@ -21,6 +28,7 @@ return new class extends Migration
             $table->string('team_2_logo');
             $table->string('champion');
             $table->string('result');
+            $table->foreignIdFor(Country::class)->constrained();
             $table->timestamps();
             $table->softDeletes()->nullable();
         });

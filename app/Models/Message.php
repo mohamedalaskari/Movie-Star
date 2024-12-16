@@ -11,11 +11,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Message extends Model
 {
     /** @use HasFactory<\Database\Factories\MessageFactory> */
-    use HasFactory,SoftDeletes;
-    protected $fillable = [
-        'message',
-        'email',
-        'user_id',
+    use HasFactory, SoftDeletes;
+    protected  $guarded = [
+        'created_at',
+        'deleted_at',
+        'updated_at',
     ];
     protected $hidden = [
         'created_at',

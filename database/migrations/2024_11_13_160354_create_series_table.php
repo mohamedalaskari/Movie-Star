@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Country;
 use App\Models\Genre;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
@@ -14,10 +15,17 @@ return new class extends Migration
     {
         Schema::create('series', function (Blueprint $table) {
             $table->id();
+            $table->string('image');
+            $table->string('story');
+            $table->string('quality');
+            $table->string('year_of_production');
+            $table->float('rate');
+            $table->boolean('top_10');
             $table->string("discription");
             $table->integer("num_of_seasons");
             $table->string("series_name");
             $table->foreignIdFor(Genre::class)->constrained();
+            $table->foreignIdFor(Country::class)->constrained();
             $table->timestamps();
             $table->softDeletes()->nullable();
         });

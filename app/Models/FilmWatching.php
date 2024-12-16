@@ -11,10 +11,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class FilmWatching extends Model
 {
     /** @use HasFactory<\Database\Factories\FilmWatchingFactory> */
-    use HasFactory,SoftDeletes;
-    protected $fillable = [
-        'user_id',
-        'film_id',
+    use HasFactory, SoftDeletes;
+    protected  $guarded = [
+        'created_at',
+        'deleted_at',
+        'updated_at',
     ];
     protected $hidden = [
         'created_at',

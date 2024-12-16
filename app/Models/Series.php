@@ -11,12 +11,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Series extends Model
 {
     /** @use HasFactory<\Database\Factories\SeriesFactory> */
-    use HasFactory,SoftDeletes;
-    protected $fillable = [
-        'discription',
-        'series_name',
-        'num_of_seasons',
-        'genre_id',
+    use HasFactory, SoftDeletes;
+    protected  $guarded = [
+        'created_at',
+        'deleted_at',
+        'updated_at',
     ];
     protected $hidden = [
         'created_at',
@@ -30,5 +29,9 @@ class Series extends Model
     public function genres(): BelongsTo
     {
         return $this->belongsTo(Genre::class);
+    }
+    public function countries(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
     }
 }

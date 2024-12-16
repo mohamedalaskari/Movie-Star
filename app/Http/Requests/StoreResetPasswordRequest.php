@@ -23,7 +23,7 @@ class StoreResetPasswordRequest extends FormRequest
     {
         return [
             'token' => 'required',
-            'password' => 'required|confirmed|regex:/\d/|min:6|max:12',
+            'password' => 'required|confirmed|regex:/\d/|min:6|max:30',
             'email' => 'required|email|max:40|exists:users,email'
         ];
     }

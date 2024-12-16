@@ -11,12 +11,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Film extends Model
 {
     /** @use HasFactory<\Database\Factories\FilmFactory> */
-    use HasFactory,SoftDeletes;
-    protected $fillable = [
-        'description',
-        'name',
-        'film_url',
-        'genre_id'
+    use HasFactory, SoftDeletes;
+    protected  $guarded = [
+        'created_at',
+        'deleted_at',
+        'updated_at',
     ];
     protected $hidden = [
         'created_at',
@@ -30,5 +29,9 @@ class Film extends Model
     public function film_watchings(): HasMany
     {
         return $this->HasMany(FilmWatching::class);
+    }
+    public function countries(): BelongsTo
+    {
+        return $this->belongsTo(Country::class);
     }
 }

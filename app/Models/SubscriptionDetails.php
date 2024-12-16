@@ -11,10 +11,11 @@ use Laravel\Sanctum\HasApiTokens;
 class SubscriptionDetails extends Model
 {
     /** @use HasFactory<\Database\Factories\SubscriptionDetailsFactory> */
-    use HasFactory,SoftDeletes,HasApiTokens;
-    protected $fillable = [
-        'user_id',
-        'subscription_id',
+    use HasFactory, SoftDeletes, HasApiTokens;
+    protected  $guarded = [
+        'created_at',
+        'deleted_at',
+        'updated_at',
     ];
     protected $hidden = [
         'created_at',

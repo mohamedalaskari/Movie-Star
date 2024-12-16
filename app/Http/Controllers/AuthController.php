@@ -78,9 +78,9 @@ class AuthController extends Controller
         $storeEmailRequest = $storeEmailRequest->validated();
         $status = Password::sendResetLink(['email' => $storeEmailRequest['email']]);
         return $status === Password::RESET_LINK_SENT ? response()->json([
-            'massege' => __($status)
+            'message' => __($status)
         ], 200) : response()->json([
-            'massege' => __($status)
+            'message' => __($status)
         ], 400);
     }
     public function reset_password(StoreResetPasswordRequest $request)
@@ -99,11 +99,10 @@ class AuthController extends Controller
                 ])->save();
             }
         );
-
-        return $status === Password::RESET_LINK_SENT ? response()->json([
-            'massege' => __($status)
-        ], 200) : response()->json([
-            'massege' => __($status)
-        ], 400);
+        if ($status) {
+            return $this->response(code: 200, msg: 'Congratolation Your Password Has Been Reset');
+        } else {
+            return $this->response(code: 400);
+        }
     }
 }

@@ -41,7 +41,7 @@ Route::prefix('Countries')->group(function () {
     Route::get('/deleted', [CountryController::class, 'deleted'])->middleware('auth:sanctum');
     Route::post('/store', [CountryController::class, 'store'])->middleware('auth:sanctum');
     Route::put('/update', [CountryController::class, 'update'])->middleware('auth:sanctum');
-    Route::get('/', [CountryController::class, 'index'])->middleware('auth:sanctum');
+    Route::get('/', [CountryController::class, 'index']);
     Route::get('/{country}', [CountryController::class, 'show'])->middleware('auth:sanctum');
     Route::get('restore/{country}', [CountryController::class, 'restore'])->middleware('auth:sanctum');
     Route::delete('delete/{country}', [CountryController::class, 'delete'])->middleware('auth:sanctum');

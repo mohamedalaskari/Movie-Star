@@ -67,7 +67,7 @@ class FilmController extends Controller
         if (Auth::user()->block === 0) {
             if ($this->Subscripe()) {
                 $id = $film->id;
-                $film = Film::with('genres', 'film_watchings')->find($id);
+                $film = Film::with('genres', 'film_watchings', 'countries')->find($id);
                 return $this->response(code: 200, data: $film);
             } else {
                 return 'you can\'t watch this episode untill pay it';
