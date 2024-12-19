@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreGenreRequest;
 use App\Http\Requests\StoreWhereGenreRequest;
 use App\Models\Film;
 use App\Http\Requests\StoreFilmRequest;
@@ -16,14 +17,51 @@ class FilmController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    public function push()
+    {
+        $movies = Film::paginate(30);
+        if ($movies) {
+            return $this->response(code: 200, data: $movies);
+        } else {
+            return $this->response(code: 404);
+        }
+    }
+    public function top_10()
+    {
+        $top_10 = Film::all()->where('top_10', true);
+        if (count($top_10) != 0) {
+            return $this->response(code: 200, data: $top_10);
+        } else {
+            return $this->response(code: 404);
+        }
+    }
+    public function rate()
+    {
+        $films = Film::all()->where('rate', '>', '7.0');
+        if (count($films) != 0) {
+            return $this->response(code: 200, data: $films);
+        } else {
+            return $this->response(code: 404);
+        }
+    }
+    public function genre($genre)
+    {
+        //get genre id
+        $genre_id = Genre::all()->where('genre', $genre)->first()->id;
+        //get film where genre
+        $films = Film::all()->where('genre_id', $genre_id);
+        if ($films) {
+            return $this->response(code: 200, data: $films);
+        } else {
+            return $this->response(code: 404);
+        }
+    }
     public function index()
     {
-        if (Auth::user()->block === 0) {
-            $Film = Film::get();
-            return $this->response(code: 200, data: $Film);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $Film = Film::get();
+        return $this->response(code: 200, data: $Film);
+
     }
 
     /**
@@ -39,24 +77,21 @@ class FilmController extends Controller
      */
     public function store(StoreFilmRequest $request, StoreWhereGenreRequest $genre)
     {
-        if (Auth::user()->block === 0) {
-            $request = $request->validated();
-            $genre = $genre->validated();
-            //get genre_id
-            $genre_id = Genre::all()->where('genre', $genre['genre'])->first()->id;
-            //add genre_id to request
-            $request['genre_id'] = $genre_id;
-            //store film
-            $insert = Film::create($request);
-            //check if inserted
-            if ($insert) {
-                return $this->response(code: 200, data: $insert);
-            } else {
-                return $this->response(code: 201);
-            }
+        $request = $request->validated();
+        $genre = $genre->validated();
+        //get genre_id
+        $genre_id = Genre::all()->where('genre', $genre['genre'])->first()->id;
+        //add genre_id to request
+        $request['genre_id'] = $genre_id;
+        //store film
+        $insert = Film::create($request);
+        //check if inserted
+        if ($insert) {
+            return $this->response(code: 200, data: $insert);
         } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+            return $this->response(code: 201);
         }
+
     }
 
     /**
@@ -64,18 +99,15 @@ class FilmController extends Controller
      */
     public function show(Film $film)
     {
-        if (Auth::user()->block === 0) {
-            if ($this->Subscripe()) {
-                $id = $film->id;
-                $film = Film::with('genres', 'film_watchings', 'countries')->find($id);
-                return $this->response(code: 200, data: $film);
-            } else {
-                return 'you can\'t watch this episode untill pay it';
-            }
+        if ($this->Subscripe()) {
+            $id = $film->id;
+            $film = Film::with('genres', 'film_watchings', 'countries')->find($id);
+            return $this->response(code: 200, data: $film);
         } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+            return 'you can\'t watch this episode untill pay it';
         }
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -90,29 +122,26 @@ class FilmController extends Controller
      */
     public function update(UpdateFilmRequest $request, StoreWhereGenreRequest $genre, StoreWhereFilmRequest $film)
     {
-        if (Auth::user()->block === 0) {
-            $request = $request->validated();
-            $genre = $genre->validated();
-            $film = $film->validated();
-            //find genre_id
-            $genre_id = Genre::all()->where('genre', $genre['genre'])->first()->id;
-            $request['genre_id'] = $genre_id;
-            //update
-            $update = DB::table('films')->where('name', $film['name'])->update([
-                'description' => $request['description'],
-                'name' => $request['name_new'],
-                'film_url' => $request['film_url'],
-                'genre_id' => $request['genre_id']
-            ]);
-            //check if updated
-            if ($update) {
-                return $this->response(code: 200, data: $update);
-            } else {
-                return $this->response(code: 201);
-            }
+        $request = $request->validated();
+        $genre = $genre->validated();
+        $film = $film->validated();
+        //find genre_id
+        $genre_id = Genre::all()->where('genre', $genre['genre'])->first()->id;
+        $request['genre_id'] = $genre_id;
+        //update
+        $update = DB::table('films')->where('name', $film['name'])->update([
+            'description' => $request['description'],
+            'name' => $request['name_new'],
+            'film_url' => $request['film_url'],
+            'genre_id' => $request['genre_id']
+        ]);
+        //check if updated
+        if ($update) {
+            return $this->response(code: 200, data: $update);
         } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+            return $this->response(code: 201);
         }
+
     }
 
     /*
@@ -124,38 +153,26 @@ class FilmController extends Controller
     }
     public function delete(Film $film)
     {
-        if (Auth::user()->block === 0) {
-            $delete = $film->delete();
-            return $this->response(code: 202, data: $delete);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $delete = $film->delete();
+        return $this->response(code: 202, data: $delete);
+
     }
     public function deleted(Film $film)
     {
-        if (Auth::user()->block === 0) {
-            $deleted = $film->onlyTrashed()->get();
-            return $this->response(code: 302, data: $deleted);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $deleted = $film->onlyTrashed()->get();
+        return $this->response(code: 302, data: $deleted);
+
     }
     public function restore($film)
     {
-        if (Auth::user()->block === 0) {
-            $film = Film::withTrashed()->where('id', $film)->restore();
-            return $this->response(code: 202, data: $film);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $film = Film::withTrashed()->where('id', $film)->restore();
+        return $this->response(code: 202, data: $film);
+
     }
     public function delete_from_trash($film)
     {
-        if (Auth::user()->block === 0) {
-            $film  = Film::where('id', $film)->forceDelete();
-            return $this->response(code: 202, data: $film);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $film = Film::where('id', $film)->forceDelete();
+        return $this->response(code: 202, data: $film);
+
     }
 }

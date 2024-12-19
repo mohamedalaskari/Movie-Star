@@ -16,7 +16,7 @@ return new class extends Migration
             $table->id();
             $table->string('image');
             $table->float('rate');
-            $table->boolean('top_10');
+            $table->boolean('top_10');//new
             $table->string('quality');
             $table->string('story');
             $table->string('year_of_production');

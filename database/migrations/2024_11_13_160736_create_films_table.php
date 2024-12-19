@@ -20,12 +20,12 @@ return new class extends Migration
             $table->string('quality');
             $table->string('year_of_production');
             $table->float('rate');
-            $table->boolean('top_10');
+            $table->boolean('top_10');//new
             $table->string("description");
             $table->string("name");
             $table->string("film_url");
             $table->foreignIdFor(Genre::class)->constrained();
-            $table->foreignIdFor(Country::class)->constrained();
+            $table->foreignIdFor(Country::class)->constrained();//new
             $table->timestamps();
             $table->softDeletes()->nullable();
         });

@@ -17,12 +17,9 @@ class SeasonController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->block === 0) {
-            $Season = Season::get();
-            return $this->response(code: 200, data: $Season);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $Season = Season::get();
+        return $this->response(code: 200, data: $Season);
+
     }
 
     /**
@@ -38,30 +35,27 @@ class SeasonController extends Controller
      */
     public function store(StoreSeasonRequest $request, StoreWhereSeriesRequest $Series)
     {
-        if (Auth::user()->block === 0) {
-            //validate
-            $request = $request->validated();
-            $request['num_of_episodes'] = 0;
-            //Series_id
-            $Series = $Series->validated();
-            $Series_id = Series::all()->where('series_name', $Series['series_name'])->first()->id;
-            $request['series_id'] = $Series_id;
-            //insert data
-            $insert = Season::create($request);
-            //add num_of_seasons in table series
-            $num_of_seasons = Series::all()->where('id', $insert['series_id'])->first()->num_of_seasons;
-            $num_of_seasons = $num_of_seasons + 1;
-            $update_num_of_seasons = DB::table('series')->where('id', $insert['series_id'])->update([
-                'num_of_seasons' => $num_of_seasons
-            ]);
-            if ($insert) {
-                return $this->response(code: 201, data: $insert);
-            } else {
-                return $this->response(code: 400, data: 'Can\'t create ');
-            }
+        //validate
+        $request = $request->validated();
+        $request['num_of_episodes'] = 0;
+        //Series_id
+        $Series = $Series->validated();
+        $Series_id = Series::all()->where('series_name', $Series['series_name'])->first()->id;
+        $request['series_id'] = $Series_id;
+        //insert data
+        $insert = Season::create($request);
+        //add num_of_seasons in table series
+        $num_of_seasons = Series::all()->where('id', $insert['series_id'])->first()->num_of_seasons;
+        $num_of_seasons = $num_of_seasons + 1;
+        $update_num_of_seasons = DB::table('series')->where('id', $insert['series_id'])->update([
+            'num_of_seasons' => $num_of_seasons
+        ]);
+        if ($insert) {
+            return $this->response(code: 201, data: $insert);
         } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+            return $this->response(code: 400, data: 'Can\'t create ');
         }
+
     }
 
     /**
@@ -69,13 +63,10 @@ class SeasonController extends Controller
      */
     public function show(Season $season)
     {
-        if (Auth::user()->block === 0) {
-            $id = $season->id;
-            $season = Season::with('series', 'episdes')->find($id);
-            return $this->response(code: 200, data: $season);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $id = $season->id;
+        $season = Season::with('series', 'episdes')->find($id);
+        return $this->response(code: 200, data: $season);
+
     }
 
     /**
@@ -103,38 +94,26 @@ class SeasonController extends Controller
     }
     public function delete(Season $season)
     {
-        if (Auth::user()->block === 0) {
-            $delete = $season->delete();
-            return $this->response(code: 202, data: $delete);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $delete = $season->delete();
+        return $this->response(code: 202, data: $delete);
+
     }
     public function deleted(Season $season)
     {
-        if (Auth::user()->block === 0) {
-            $deleted = $season->onlyTrashed()->get();
-            return $this->response(code: 302, data: $deleted);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $deleted = $season->onlyTrashed()->get();
+        return $this->response(code: 302, data: $deleted);
+
     }
     public function restore($season)
     {
-        if (Auth::user()->block === 0) {
-            $season = Season::withTrashed()->where('id', $season)->restore();
-            return $this->response(code: 202, data: $season);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $season = Season::withTrashed()->where('id', $season)->restore();
+        return $this->response(code: 202, data: $season);
+
     }
     public function delete_from_trash($season)
     {
-        if (Auth::user()->block === 0) {
-            $season  = Season::where('id', $season)->forceDelete();
-            return $this->response(code: 202, data: $season);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $season = Season::where('id', $season)->forceDelete();
+        return $this->response(code: 202, data: $season);
+
     }
 }

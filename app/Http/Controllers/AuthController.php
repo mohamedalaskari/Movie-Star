@@ -23,8 +23,6 @@ class AuthController extends Controller
     public function Register(StoreRegisterRequest $Request, StoreWhereCountryRequest $country)
     {
         $Request = $Request->validated();
-        //hash password
-        $Request['password'] = Hash::make($Request['password']);
         //find country_id
         $country = $country->validated();
         $country_id = Country::all()->where('country', $country['country'])->first()->id;
@@ -40,16 +38,21 @@ class AuthController extends Controller
     }
     public function Login(StoreLoginRequest $request)
     {
+
         $request = $request->validated();
-        //$request = str_replace(' ', '', $request);
-        $Auth = Auth::attempt($request);
-        if ($Auth) {
-            $user = Auth::user();
-            $token = $user->createToken('front-end', [$user->role], Carbon::now()->addDays(7))->plainTextToken;
-            $user['token'] = $token;
-            return $this->response(code: 200, data: $user);
+        $block = User::all()->where('email', $request['email'])->first->block;
+        if ($block) {
+            return $this->response(code: 401, data: 'this account is blocked');
         } else {
-            return $this->response(code: 401);
+            $Auth = Auth::attempt($request);
+            if ($Auth) {
+                $user = Auth::user();
+                $token = $user->createToken('front-end', [$user->role], Carbon::now()->addDays(7))->plainTextToken;
+                $user['token'] = $token;
+                return $this->response(code: 200, data: $user);
+            } else {
+                return $this->response(code: 401);
+            }
         }
     }
     public function logout(Request $request)
@@ -80,8 +83,8 @@ class AuthController extends Controller
         return $status === Password::RESET_LINK_SENT ? response()->json([
             'message' => __($status)
         ], 200) : response()->json([
-            'message' => __($status)
-        ], 400);
+                        'message' => __($status)
+                    ], 400);
     }
     public function reset_password(StoreResetPasswordRequest $request)
     {

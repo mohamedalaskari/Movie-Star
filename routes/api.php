@@ -85,6 +85,10 @@ Route::prefix('Genres')->group(function () {
 
 //series
 Route::prefix('Series')->group(function () {
+    Route::get('paginate', [SeriesController::class, 'push'])->middleware('auth:sanctum');
+    Route::get('top_10', [SeriesController::class, 'top_10'])->middleware('auth:sanctum');
+    Route::get('rate', [SeriesController::class, 'rate'])->middleware('auth:sanctum');
+    Route::get('genre/{genre}', [SeriesController::class, 'genre'])->middleware('auth:sanctum');
     Route::get('/deleted', [SeriesController::class, 'deleted'])->middleware('auth:sanctum');
     Route::get('/', [SeriesController::class, 'index'])->middleware('auth:sanctum');
     Route::post('/store', [SeriesController::class, 'store'])->middleware('auth:sanctum');
@@ -119,6 +123,10 @@ Route::prefix('Messages')->group(function () {
 
 //films
 Route::prefix('Films')->group(function () {
+    Route::get('paginate', [FilmController::class, 'push'])->middleware('auth:sanctum');
+    Route::get('top_10', [FilmController::class, 'top_10'])->middleware('auth:sanctum');
+    Route::get('rate', [FilmController::class, 'rate'])->middleware('auth:sanctum');
+    Route::get('genre/{genre}', [FilmController::class, 'genre'])->middleware('auth:sanctum');
     Route::get('/deleted', [FilmController::class, 'deleted'])->middleware('auth:sanctum');
     Route::get('/', [FilmController::class, 'index'])->middleware('auth:sanctum');
     Route::post('/store', [FilmController::class, 'store'])->middleware('auth:sanctum');
@@ -142,6 +150,10 @@ Route::prefix('FilmWatchings')->group(function () {
 
 //matches
 Route::prefix('Matches')->group(function () {
+    Route::get('paginate', [MatchesController::class, 'push'])->middleware('auth:sanctum');
+    Route::get('top_10',  [MatchesController::class, 'top_10'])->middleware('auth:sanctum');
+    Route::get('rate',  [MatchesController::class, 'rate'])->middleware('auth:sanctum');
+    Route::get('champion/{champion}',  [MatchesController::class, 'champion'])->middleware('auth:sanctum');
     Route::get('/deleted',  [MatchesController::class, 'deleted'])->middleware('auth:sanctum');
     Route::get('/', [MatchesController::class, 'index'])->middleware('auth:sanctum');
     Route::put('/update', [MatchesController::class, 'update'])->middleware('auth:sanctum');

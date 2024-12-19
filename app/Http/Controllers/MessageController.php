@@ -14,12 +14,9 @@ class MessageController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->block === 0) {
-            $Message = Message::get();
-            return $this->response(code: 200, data: $Message);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $Message = Message::get();
+        return $this->response(code: 200, data: $Message);
+
     }
 
     /**
@@ -35,21 +32,18 @@ class MessageController extends Controller
      */
     public function store(StoreMessageRequest $request)
     {
-        if (Auth::user()->block === 0) {
-            $request = $request->validated();
-            $user_id = Auth::user()->id;
-            $request['user_id'] = $user_id;
-            //insert
-            $insert = Message::create($request);
-            //check if insert
-            if ($insert) {
-                return $this->response(code: 200, data: $insert);
-            } else {
-                return $this->response(code: 201);
-            }
+        $request = $request->validated();
+        $user_id = Auth::user()->id;
+        $request['user_id'] = $user_id;
+        //insert
+        $insert = Message::create($request);
+        //check if insert
+        if ($insert) {
+            return $this->response(code: 200, data: $insert);
         } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+            return $this->response(code: 201);
         }
+
     }
 
     /**
@@ -57,13 +51,10 @@ class MessageController extends Controller
      */
     public function show(Message $message)
     {
-        if (Auth::user()->block === 0) {
-            $id = $message->id;
-            $message = Message::with('users')->find($id);
-            return $this->response(code: 200, data: $message);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $id = $message->id;
+        $message = Message::with('users')->find($id);
+        return $this->response(code: 200, data: $message);
+
     }
 
     /**
@@ -91,38 +82,26 @@ class MessageController extends Controller
     }
     public function delete(Message $message)
     {
-        if (Auth::user()->block === 0) {
-            $delete = $message->delete();
-            return $this->response(code: 202, data: $delete);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $delete = $message->delete();
+        return $this->response(code: 202, data: $delete);
+
     }
     public function deleted(Message $message)
     {
-        if (Auth::user()->block === 0) {
-            $deleted = $message->onlyTrashed()->get();
-            return $this->response(code: 302, data: $deleted);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $deleted = $message->onlyTrashed()->get();
+        return $this->response(code: 302, data: $deleted);
+
     }
     public function restore($message)
     {
-        if (Auth::user()->block === 0) {
-            $message = Message::withTrashed()->where('id', $message)->restore();
-            return $this->response(code: 202, data: $message);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $message = Message::withTrashed()->where('id', $message)->restore();
+        return $this->response(code: 202, data: $message);
+
     }
     public function delete_from_trash($message)
     {
-        if (Auth::user()->block === 0) {
-            $message  = Message::where('id',  $message)->forceDelete();
-            return $this->response(code: 202, data: $message);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $message = Message::where('id', $message)->forceDelete();
+        return $this->response(code: 202, data: $message);
+
     }
 }

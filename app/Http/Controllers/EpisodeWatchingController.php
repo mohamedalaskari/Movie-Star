@@ -17,12 +17,9 @@ class EpisodeWatchingController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->block === 0) {
-            $EpisodeWatching = EpisodeWatching::get();
-            return $this->response(code: 200, data: $EpisodeWatching);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $EpisodeWatching = EpisodeWatching::get();
+        return $this->response(code: 200, data: $EpisodeWatching);
+
     }
 
     /**
@@ -39,22 +36,19 @@ class EpisodeWatchingController extends Controller
      */
     public function store(StoreEpisodeWatchingRequest $request)
     {
-        if (Auth::user()->block === 0) {
-            if ($this->Subscripe()) {
-                //validate
-                $request = $request->validated();
-                //user_id
-                $user_id = Auth::user()->id;
-                $request['user_id'] = $user_id;
-                //insert data
-                $insert = EpisodeWatching::create($request);
-                return $this->response(code: 201, data: $insert);
-            } else {
-                return $this->response(code: 500, msg: 'not payment');
-            }
+        if ($this->Subscripe()) {
+            //validate
+            $request = $request->validated();
+            //user_id
+            $user_id = Auth::user()->id;
+            $request['user_id'] = $user_id;
+            //insert data
+            $insert = EpisodeWatching::create($request);
+            return $this->response(code: 201, data: $insert);
         } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
+            return $this->response(code: 500, msg: 'not payment');
         }
+
     }
 
     /**
@@ -62,13 +56,10 @@ class EpisodeWatchingController extends Controller
      */
     public function show(EpisodeWatching $episodeWatching)
     {
-        if (Auth::user()->block === 0) {
-            $id = $episodeWatching->id;
-            $episodeWatching = EpisodeWatching::with('users', 'episodes')->find($id);
-            return $this->response(code: 200, data: $episodeWatching);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $id = $episodeWatching->id;
+        $episodeWatching = EpisodeWatching::with('users', 'episodes')->find($id);
+        return $this->response(code: 200, data: $episodeWatching);
+
     }
 
     /**
@@ -96,38 +87,26 @@ class EpisodeWatchingController extends Controller
     }
     public function delete(EpisodeWatching $episodeWatching)
     {
-        if (Auth::user()->block === 0) {
-            $delete = $episodeWatching->delete();
-            return $this->response(code: 202, data: $delete);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $delete = $episodeWatching->delete();
+        return $this->response(code: 202, data: $delete);
+
     }
     public function deleted(EpisodeWatching $episodeWatching)
     {
-        if (Auth::user()->block === 0) {
-            $deleted = $episodeWatching->onlyTrashed()->get();
-            return $this->response(code: 302, data: $deleted);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $deleted = $episodeWatching->onlyTrashed()->get();
+        return $this->response(code: 302, data: $deleted);
+
     }
     public function restore($episodeWatching)
     {
-        if (Auth::user()->block === 0) {
-            $episodeWatching = EpisodeWatching::withTrashed()->where('id', $episodeWatching)->restore();
-            return $this->response(code: 202, data: $episodeWatching);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $episodeWatching = EpisodeWatching::withTrashed()->where('id', $episodeWatching)->restore();
+        return $this->response(code: 202, data: $episodeWatching);
+
     }
     public function delete_from_trash($episodeWatching)
     {
-        if (Auth::user()->block === 0) {
-            $episodeWatching  = EpisodeWatching::where('id',  $episodeWatching)->forceDelete();
-            return $this->response(code: 202, data: $episodeWatching);
-        } else {
-            return $this->response(code: 401, msg: "You cannot log in because you are blocked.");
-        }
+        $episodeWatching = EpisodeWatching::where('id', $episodeWatching)->forceDelete();
+        return $this->response(code: 202, data: $episodeWatching);
+
     }
 }
