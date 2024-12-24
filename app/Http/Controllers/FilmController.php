@@ -18,18 +18,9 @@ class FilmController extends Controller
      * Display a listing of the resource.
      */
 
-    public function push()
-    {
-        $movies = Film::paginate(30);
-        if ($movies) {
-            return $this->response(code: 200, data: $movies);
-        } else {
-            return $this->response(code: 404);
-        }
-    }
     public function top_10()
     {
-        $top_10 = Film::all()->where('top_10', true);
+        $top_10 = Film::select(['id', 'image', 'story', 'quality', 'year_of_production', 'rate', 'top_10', 'country_id', 'genre_id', 'name', 'description'])->with('genre', 'country')->get()->where('top_10', true);
         if (count($top_10) != 0) {
             return $this->response(code: 200, data: $top_10);
         } else {
@@ -38,7 +29,7 @@ class FilmController extends Controller
     }
     public function rate()
     {
-        $films = Film::all()->where('rate', '>', '7.0');
+        $films = Film::select(['id', 'image', 'story', 'quality', 'year_of_production', 'rate', 'top_10', 'country_id', 'genre_id', 'name', 'description'])->with('genre', 'country')->get()->where('rate', '>', '7.0');
         if (count($films) != 0) {
             return $this->response(code: 200, data: $films);
         } else {
@@ -50,7 +41,7 @@ class FilmController extends Controller
         //get genre id
         $genre_id = Genre::all()->where('genre', $genre)->first()->id;
         //get film where genre
-        $films = Film::all()->where('genre_id', $genre_id);
+        $films = Film::select(['id', 'image', 'story', 'quality', 'year_of_production', 'rate', 'top_10', 'country_id', 'genre_id', 'name', 'description'])->with('genre', 'country')->get()->where('genre_id', $genre_id);
         if ($films) {
             return $this->response(code: 200, data: $films);
         } else {
@@ -59,9 +50,9 @@ class FilmController extends Controller
     }
     public function index()
     {
-        $Film = Film::get();
+        $Film = Film::select(['id', 'image', 'story', 'quality', 'year_of_production', 'rate', 'top_10', 'country_id', 'genre_id', 'name', 'description'])
+            ->with('genre', 'country')->paginate(30);
         return $this->response(code: 200, data: $Film);
-
     }
 
     /**
@@ -91,7 +82,6 @@ class FilmController extends Controller
         } else {
             return $this->response(code: 201);
         }
-
     }
 
     /**
@@ -101,7 +91,7 @@ class FilmController extends Controller
     {
         if ($this->Subscripe()) {
             $id = $film->id;
-            $film = Film::with('genres', 'film_watchings', 'countries')->find($id);
+            $film = Film::with('genre', 'film_watchings', 'country')->find($id);
             return $this->response(code: 200, data: $film);
         } else {
             return 'you can\'t watch this episode untill pay it';
@@ -141,7 +131,6 @@ class FilmController extends Controller
         } else {
             return $this->response(code: 201);
         }
-
     }
 
     /*
@@ -155,24 +144,20 @@ class FilmController extends Controller
     {
         $delete = $film->delete();
         return $this->response(code: 202, data: $delete);
-
     }
     public function deleted(Film $film)
     {
         $deleted = $film->onlyTrashed()->get();
         return $this->response(code: 302, data: $deleted);
-
     }
     public function restore($film)
     {
         $film = Film::withTrashed()->where('id', $film)->restore();
         return $this->response(code: 202, data: $film);
-
     }
     public function delete_from_trash($film)
     {
         $film = Film::where('id', $film)->forceDelete();
         return $this->response(code: 202, data: $film);
-
     }
 }

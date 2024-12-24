@@ -14,9 +14,8 @@ class MatchWatchingController extends Controller
      */
     public function index()
     {
-        $MatchWatching = MatchWatching::get();
+        $MatchWatching = MatchWatching::paginate(30);
         return $this->response(code: 200, data: $MatchWatching);
-
     }
 
     /**
@@ -44,7 +43,6 @@ class MatchWatchingController extends Controller
         } else {
             return $this->response(code: 500, msg: 'not payment');
         }
-
     }
 
     /**
@@ -53,9 +51,8 @@ class MatchWatchingController extends Controller
     public function show(MatchWatching $matchWatching)
     {
         $id = $matchWatching->id;
-        $matchWatching = MatchWatching::with('users', 'matches')->find($id);
+        $matchWatching = MatchWatching::with('user', 'matches')->find($id);
         return $this->response(code: 200, data: $matchWatching);
-
     }
 
     /**
@@ -85,24 +82,20 @@ class MatchWatchingController extends Controller
     {
         $delete = $matchWatching->delete();
         return $this->response(code: 202, data: $delete);
-
     }
     public function deleted(MatchWatching $matchWatching)
     {
         $deleted = $matchWatching->onlyTrashed()->get();
         return $this->response(code: 302, data: $deleted);
-
     }
     public function restore($matchWatching)
     {
         $matchWatching = MatchWatching::withTrashed()->where('id', $matchWatching)->restore();
         return $this->response(code: 202, data: $matchWatching);
-
     }
     public function delete_from_trash($matchWatching)
     {
         $matchWatching = MatchWatching::where('id', $matchWatching)->forceDelete();
         return $this->response(code: 202, data: $matchWatching);
-
     }
 }

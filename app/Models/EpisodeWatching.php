@@ -22,11 +22,11 @@ class EpisodeWatching extends Model
         'deleted_at',
         'updated_at',
     ];
-    public function users(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->BelongsTo(User::class);
     }
-    public function episodes(): BelongsTo
+    public function episode(): BelongsTo
     {
         return $this->BelongsTo(Episode::class);
     }

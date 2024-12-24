@@ -22,7 +22,7 @@ class MatchWatching extends Model
         'deleted_at',
         'updated_at',
     ];
-    public function users(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->BelongsTo(User::class);
     }

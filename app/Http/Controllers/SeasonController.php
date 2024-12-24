@@ -17,9 +17,8 @@ class SeasonController extends Controller
      */
     public function index()
     {
-        $Season = Season::get();
+        $Season = Season::paginate(30);
         return $this->response(code: 200, data: $Season);
-
     }
 
     /**
@@ -55,7 +54,6 @@ class SeasonController extends Controller
         } else {
             return $this->response(code: 400, data: 'Can\'t create ');
         }
-
     }
 
     /**
@@ -66,7 +64,6 @@ class SeasonController extends Controller
         $id = $season->id;
         $season = Season::with('series', 'episdes')->find($id);
         return $this->response(code: 200, data: $season);
-
     }
 
     /**
@@ -96,24 +93,20 @@ class SeasonController extends Controller
     {
         $delete = $season->delete();
         return $this->response(code: 202, data: $delete);
-
     }
     public function deleted(Season $season)
     {
         $deleted = $season->onlyTrashed()->get();
         return $this->response(code: 302, data: $deleted);
-
     }
     public function restore($season)
     {
         $season = Season::withTrashed()->where('id', $season)->restore();
         return $this->response(code: 202, data: $season);
-
     }
     public function delete_from_trash($season)
     {
         $season = Season::where('id', $season)->forceDelete();
         return $this->response(code: 202, data: $season);
-
     }
 }

@@ -17,9 +17,8 @@ class SubscriptionDetailsController extends Controller
      */
     public function index()
     {
-        $SubscriptionDetails = SubscriptionDetails::get();
+        $SubscriptionDetails = SubscriptionDetails::paginate(30);
         return $this->response(code: 200, data: $SubscriptionDetails);
-
     }
     public $stripe;
     public function __construct()
@@ -59,13 +58,11 @@ class SubscriptionDetailsController extends Controller
             'cancel_url' => route('cancel'),
         ]);
         return $checkout_session->url;
-
     }
 
     public function cancel()
     {
         return "Payment is canceled.";
-
     }
 
     /**
@@ -98,7 +95,6 @@ class SubscriptionDetailsController extends Controller
             ]);
             return $this->response(code: 201, msg: "Payment is successful");
         }
-
     }
 
     /**
@@ -107,9 +103,8 @@ class SubscriptionDetailsController extends Controller
     public function show(SubscriptionDetails $subscriptionDetails)
     {
         $id = $subscriptionDetails->id;
-        $subscriptionDetails = SubscriptionDetails::with('users', 'subscriptions')->find($id);
+        $subscriptionDetails = SubscriptionDetails::with('user', 'subscription')->find($id);
         return $this->response(code: 200, data: $subscriptionDetails);
-
     }
 
     /**
@@ -139,24 +134,20 @@ class SubscriptionDetailsController extends Controller
     {
         $delete = $subscriptionDetails->delete();
         return $this->response(code: 202, data: $delete);
-
     }
     public function deleted(SubscriptionDetails $subscriptionDetails)
     {
         $deleted = $subscriptionDetails->onlyTrashed()->get();
         return $this->response(code: 302, data: $deleted);
-
     }
     public function restore($subscriptionDetails)
     {
         $subscriptionDetails = SubscriptionDetails::withTrashed()->where('id', $subscriptionDetails)->restore();
         return $this->response(code: 202, data: $subscriptionDetails);
-
     }
     public function delete_from_trash($subscriptionDetails)
     {
         $subscriptionDetails = SubscriptionDetails::where('id', $subscriptionDetails)->forceDelete();
         return $this->response(code: 202, data: $subscriptionDetails);
-
     }
 }

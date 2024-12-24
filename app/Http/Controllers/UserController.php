@@ -10,17 +10,14 @@ class UserController extends Controller
 {
     public function index()
     {
-        $user = User::get();
+        $user = User::paginate(30);
         return $this->response(code: 200, data: $user);
-
     }
 
     public function show(User $user)
     {
         $id = $user->id;
-        $user = User::with('countries', 'subscription_details', 'film_watchings', 'match_watchings', 'episode_watchings')->find($id);
+        $user = User::with('country', 'subscription_details', 'film_watchings', 'match_watchings', 'episode_watchings')->find($id);
         return $this->response(code: 200, data: $user);
-
     }
-   
 }

@@ -26,11 +26,11 @@ class Series extends Model
     {
         return $this->hasMany(Season::class);
     }
-    public function genres(): BelongsTo
+    public function genre(): BelongsTo
     {
         return $this->belongsTo(Genre::class);
     }
-    public function countries(): BelongsTo
+    public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
     }

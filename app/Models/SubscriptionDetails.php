@@ -22,11 +22,11 @@ class SubscriptionDetails extends Model
         'deleted_at',
         'updated_at',
     ];
-    public function users(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-    public function subscriptions(): BelongsTo
+    public function subscription(): BelongsTo
     {
         return $this->belongsTo(Subscription::class);
     }

@@ -22,11 +22,11 @@ class FilmWatching extends Model
         'deleted_at',
         'updated_at',
     ];
-    public function users(): BelongsTo
+    public function user(): BelongsTo
     {
         return $this->BelongsTo(User::class);
     }
-    public function films(): BelongsTo
+    public function film(): BelongsTo
     {
         return $this->BelongsTo(Film::class);
     }

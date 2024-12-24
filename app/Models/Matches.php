@@ -27,7 +27,7 @@ class Matches extends Model
     {
         return $this->hasMany(MatchWatching::class);
     }
-    public function countries(): BelongsTo
+    public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
     }

@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('image')->default('1070509.jpg');
+            $table->string('image')->default('https://th.bing.com/th/id/OIP.U1FcsQimhEwceLMAYGs_TQHaHa?rs=1&pid=ImgDetMain');
             $table->boolean('block')->default(false);
             $table->string('username');
             $table->integer('age');

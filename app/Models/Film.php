@@ -22,7 +22,7 @@ class Film extends Model
         'deleted_at',
         'updated_at',
     ];
-    public function genres(): BelongsTo
+    public function genre(): BelongsTo
     {
         return $this->BelongsTo(Genre::class);
     }
@@ -30,7 +30,7 @@ class Film extends Model
     {
         return $this->HasMany(FilmWatching::class);
     }
-    public function countries(): BelongsTo
+    public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class);
     }

@@ -26,7 +26,7 @@ class Episode extends Model
         'updated_at',
     ];
 
-    public function seasons(): BelongsTo
+    public function season(): BelongsTo
     {
         return $this->belongsTo(Season::class);
     }

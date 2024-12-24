@@ -17,9 +17,8 @@ class EpisodeWatchingController extends Controller
      */
     public function index()
     {
-        $EpisodeWatching = EpisodeWatching::get();
+        $EpisodeWatching = EpisodeWatching::paginate(30);
         return $this->response(code: 200, data: $EpisodeWatching);
-
     }
 
     /**
@@ -48,7 +47,6 @@ class EpisodeWatchingController extends Controller
         } else {
             return $this->response(code: 500, msg: 'not payment');
         }
-
     }
 
     /**
@@ -57,9 +55,8 @@ class EpisodeWatchingController extends Controller
     public function show(EpisodeWatching $episodeWatching)
     {
         $id = $episodeWatching->id;
-        $episodeWatching = EpisodeWatching::with('users', 'episodes')->find($id);
+        $episodeWatching = EpisodeWatching::with('user', 'episode')->find($id);
         return $this->response(code: 200, data: $episodeWatching);
-
     }
 
     /**
@@ -89,24 +86,20 @@ class EpisodeWatchingController extends Controller
     {
         $delete = $episodeWatching->delete();
         return $this->response(code: 202, data: $delete);
-
     }
     public function deleted(EpisodeWatching $episodeWatching)
     {
         $deleted = $episodeWatching->onlyTrashed()->get();
         return $this->response(code: 302, data: $deleted);
-
     }
     public function restore($episodeWatching)
     {
         $episodeWatching = EpisodeWatching::withTrashed()->where('id', $episodeWatching)->restore();
         return $this->response(code: 202, data: $episodeWatching);
-
     }
     public function delete_from_trash($episodeWatching)
     {
         $episodeWatching = EpisodeWatching::where('id', $episodeWatching)->forceDelete();
         return $this->response(code: 202, data: $episodeWatching);
-
     }
 }

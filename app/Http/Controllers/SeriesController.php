@@ -16,18 +16,9 @@ class SeriesController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function push()
-    {
-        $series = Series::paginate(30);
-        if ($series) {
-            return $this->response(code: 200, data: $series);
-        } else {
-            return $this->response(code: 404);
-        }
-    }
     public function top_10()
     {
-        $top_10 = Series::all()->where('top_10', true);
+        $top_10 = Series::with('genre', 'country')->get()->where('top_10', true);
         if (count($top_10) != 0) {
             return $this->response(code: 200, data: $top_10);
         } else {
@@ -36,7 +27,7 @@ class SeriesController extends Controller
     }
     public function rate()
     {
-        $series = Series::all()->where('rate', '>', '7.0');
+        $series = Series::with('genre', 'country')->get()->where('rate', '>', '7.0');
         if (count($series) != 0) {
             return $this->response(code: 200, data: $series);
         } else {
@@ -46,7 +37,7 @@ class SeriesController extends Controller
     public function genre($genre)
     {
         //get genre id
-        $genre_id = Genre::all()->where('genre', $genre)->first()->id;
+        $genre_id = Genre::with('genre', 'country')->get()->where('genre', $genre)->first()->id;
         //get serires where genre
         $series = Series::all()->where('genre_id', $genre_id);
         if ($series) {
@@ -57,9 +48,8 @@ class SeriesController extends Controller
     }
     public function index()
     {
-        $Series = Series::get();
+        $Series = Series::paginate(30);
         return $this->response(code: 200, data: $Series);
-
     }
 
     /**
@@ -89,7 +79,6 @@ class SeriesController extends Controller
         } else {
             return $this->response(code: 400, data: 'Can\'t create ');
         }
-
     }
 
     /**
@@ -98,9 +87,8 @@ class SeriesController extends Controller
     public function show(Series $series)
     {
         $id = $series->id;
-        $series = series::with('genres', 'seasons', 'countries')->find($id);
+        $series = series::with('genre', 'seasons', 'country')->find($id);
         return $this->response(code: 200, data: $series);
-
     }
 
     /**
@@ -133,7 +121,6 @@ class SeriesController extends Controller
         } else {
             return $this->response(code: 201);
         }
-
     }
 
     /**
@@ -147,24 +134,20 @@ class SeriesController extends Controller
     {
         $delete = $series->delete();
         return $this->response(code: 202, data: $delete);
-
     }
     public function deleted(Series $series)
     {
         $deleted = $series->onlyTrashed()->get();
         return $this->response(code: 302, data: $deleted);
-
     }
     public function restore($series)
     {
         $series = Series::withTrashed()->where('id', $series)->restore();
         return $this->response(code: 202, data: $series);
-
     }
     public function delete_from_trash($series)
     {
         $series = Series::where('id', $series)->forceDelete();
         return $this->response(code: 202, data: $series);
-
     }
 }

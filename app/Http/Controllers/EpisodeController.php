@@ -21,9 +21,8 @@ class EpisodeController extends Controller
      */
     public function index()
     {
-        $Episode = Episode::get();
+        $Episode = Episode::select(['id', 'image', 'episode_number', 'description', 'season_id'])->with('season')->paginate(30);
         return $this->response(code: 200, data: $Episode);
-
     }
 
     /**
@@ -69,7 +68,6 @@ class EpisodeController extends Controller
         } else {
             return $this->response(code: 400, data: 'Can\'t create ');
         }
-
     }
 
     /**
@@ -79,12 +77,11 @@ class EpisodeController extends Controller
     {
         if ($this->Subscripe()) {
             $id = $episode->id;
-            $episode = Episode::with('seasons', 'episode_watchings')->find($id);
+            $episode = Episode::with('season', 'episode_watchings')->find($id);
             return $this->response(code: 200, data: $episode);
         } else {
             return 'you can\'t watch this episode untill pay it';
         }
-
     }
 
     /**
@@ -128,7 +125,6 @@ class EpisodeController extends Controller
         } else {
             return $this->response(code: 400, data: 'Can\'t update ');
         }
-
     }
 
     /**
@@ -142,24 +138,20 @@ class EpisodeController extends Controller
     {
         $delete = $episode->delete();
         return $this->response(code: 202, data: $delete);
-
     }
     public function deleted(Episode $episode)
     {
         $deleted = $episode->onlyTrashed()->get();
         return $this->response(code: 302, data: $deleted);
-
     }
     public function restore($episode)
     {
         $episode = Episode::withTrashed()->where('id', $episode)->restore();
         return $this->response(code: 202, data: $episode);
-
     }
     public function delete_from_trash($episode)
     {
         $episode = Episode::where('id', $episode)->forceDelete();
         return $this->response(code: 202, data: $episode);
-
     }
 }

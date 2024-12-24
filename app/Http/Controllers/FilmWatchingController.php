@@ -14,9 +14,8 @@ class FilmWatchingController extends Controller
      */
     public function index()
     {
-        $FilmWatching = FilmWatching::get();
+        $FilmWatching = FilmWatching::paginate(30);
         return $this->response(code: 200, data: $FilmWatching);
-
     }
 
     /**
@@ -44,7 +43,6 @@ class FilmWatchingController extends Controller
         } else {
             return $this->response(code: 500, msg: 'not payment');
         }
-
     }
 
     /**
@@ -53,9 +51,8 @@ class FilmWatchingController extends Controller
     public function show(FilmWatching $filmWatching)
     {
         $id = $filmWatching->id;
-        $filmWatching = FilmWatching::with('users', 'films')->find($id);
+        $filmWatching = FilmWatching::with('user', 'film')->find($id);
         return $this->response(code: 200, data: $filmWatching);
-
     }
 
     /**
@@ -85,24 +82,20 @@ class FilmWatchingController extends Controller
     {
         $delete = $filmWatching->delete();
         return $this->response(code: 202, data: $delete);
-
     }
     public function deleted(FilmWatching $filmWatching)
     {
         $deleted = $filmWatching->onlyTrashed()->get();
         return $this->response(code: 302, data: $deleted);
-
     }
     public function restore($filmWatching)
     {
         $filmWatching = FilmWatching::withTrashed()->where('id', $filmWatching)->restore();
         return $this->response(code: 202, data: $filmWatching);
-
     }
     public function delete_from_trash($filmWatching)
     {
         $filmWatching = FilmWatching::where('id', $filmWatching)->forceDelete();
         return $this->response(code: 202, data: $filmWatching);
-
     }
 }
