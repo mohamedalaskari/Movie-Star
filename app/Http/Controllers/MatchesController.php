@@ -14,6 +14,15 @@ class MatchesController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function new()
+    {
+        $new = Matches::with('country')->select(['id', 'image', 'rate', 'top_10', 'quality', 'story', 'year_of_production', 'stadium', 'team_1', 'team_1_logo', 'team_2', 'team_2_logo', 'champion', 'result', 'country_id'])->orderBy('id', 'desc')->limit(15)->get();
+        if (count($new) != 0) {
+            return $this->response(code: 200, data: $new);
+        } else {
+            return $this->response(code: 404);
+        }
+    }
     public function top_10()
     {
         $top_10 = Matches::with('country')->select(['id', 'image', 'rate', 'top_10', 'quality', 'story', 'year_of_production', 'stadium', 'team_1', 'team_1_logo', 'team_2', 'team_2_logo', 'champion', 'result', 'country_id'])->get()

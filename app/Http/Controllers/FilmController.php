@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreGenreRequest;
+
 use App\Http\Requests\StoreWhereGenreRequest;
 use App\Models\Film;
 use App\Http\Requests\StoreFilmRequest;
 use App\Http\Requests\StoreWhereFilmRequest;
 use App\Http\Requests\UpdateFilmRequest;
 use App\Models\Genre;
-use Illuminate\Support\Facades\Auth;
+
 use Illuminate\Support\Facades\DB;
 
 class FilmController extends Controller
@@ -18,6 +18,15 @@ class FilmController extends Controller
      * Display a listing of the resource.
      */
 
+    public function new()
+    {
+        $new = Film::select(['id', 'image', 'story', 'quality', 'year_of_production', 'rate', 'top_10', 'country_id', 'genre_id', 'name', 'description'])->with('genre', 'country')->orderBy('id', 'desc')->limit(15)->get();
+        if (count($new) != 0) {
+            return $this->response(code: 200, data: $new);
+        } else {
+            return $this->response(code: 404);
+        }
+    }
     public function top_10()
     {
         $top_10 = Film::select(['id', 'image', 'story', 'quality', 'year_of_production', 'rate', 'top_10', 'country_id', 'genre_id', 'name', 'description'])->with('genre', 'country')->get()->where('top_10', true);

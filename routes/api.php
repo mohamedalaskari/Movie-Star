@@ -51,7 +51,7 @@ Route::prefix('Countries')->group(function () {
 //Episode
 Route::prefix('Episodes')->group(function () {
     Route::get('/deleted', [EpisodeController::class, 'deleted'])->middleware('auth:sanctum');
-    Route::get('/', [EpisodeController::class, 'index'])->middleware('auth:sanctum');
+    Route::get('/', [EpisodeController::class, 'index']);
     Route::post('/store', [EpisodeController::class, 'store'])->middleware('auth:sanctum');
     Route::put('/update', [EpisodeController::class, 'update'])->middleware('auth:sanctum');
     Route::get('/{episode}', [EpisodeController::class, 'show'])->middleware('auth:sanctum');
@@ -74,8 +74,8 @@ Route::prefix('EpisodeWatchings')->group(function () {
 //genre
 Route::prefix('Genres')->group(function () {
     Route::get('/deleted',  [GenreController::class, 'deleted'])->middleware('auth:sanctum');
-    Route::get('/', [GenreController::class, 'index'])->middleware('auth:sanctum');
-    Route::get('/{genre}', [GenreController::class, 'show'])->middleware('auth:sanctum');
+    Route::get('/', [GenreController::class, 'index']);
+    Route::get('/{genre}', [GenreController::class, 'show']);
     Route::put('/update', [GenreController::class, 'update'])->middleware('auth:sanctum');
     Route::post('/store', [GenreController::class, 'store'])->middleware('auth:sanctum');
     Route::get('restore/{genre}',  [GenreController::class, 'restore'])->middleware('auth:sanctum');
@@ -85,11 +85,12 @@ Route::prefix('Genres')->group(function () {
 
 //series
 Route::prefix('Series')->group(function () {
-    Route::get('top_10', [SeriesController::class, 'top_10'])->middleware('auth:sanctum');
-    Route::get('rate', [SeriesController::class, 'rate'])->middleware('auth:sanctum');
-    Route::get('genre/{genre}', [SeriesController::class, 'genre'])->middleware('auth:sanctum');
+    Route::get('top_10', [SeriesController::class, 'top_10']);
+    Route::get('new',  [SeriesController::class, 'new']);
+    Route::get('rate', [SeriesController::class, 'rate']);
+    Route::get('genre/{genre}', [SeriesController::class, 'genre']);
     Route::get('/deleted', [SeriesController::class, 'deleted'])->middleware('auth:sanctum');
-    Route::get('/', [SeriesController::class, 'index'])->middleware('auth:sanctum');
+    Route::get('/', [SeriesController::class, 'index']);
     Route::post('/store', [SeriesController::class, 'store'])->middleware('auth:sanctum');
     Route::put('/update', [SeriesController::class, 'update'])->middleware('auth:sanctum');
     Route::get('/{series}', [SeriesController::class, 'show'])->middleware('auth:sanctum');
@@ -101,7 +102,7 @@ Route::prefix('Series')->group(function () {
 //Seasons
 Route::prefix('Seasons')->group(function () {
     Route::get('/deleted', [SeasonController::class, 'deleted'])->middleware('auth:sanctum');
-    Route::get('/', [SeasonController::class, 'index'])->middleware('auth:sanctum');
+    Route::get('/', [SeasonController::class, 'index']);
     Route::post('/store', [SeasonController::class, 'store'])->middleware('auth:sanctum');
     Route::get('/{season}', [SeasonController::class, 'show'])->middleware('auth:sanctum');
     Route::get('restore/{season}', [SeasonController::class, 'restore'])->middleware('auth:sanctum');
@@ -122,11 +123,12 @@ Route::prefix('Messages')->group(function () {
 
 //films
 Route::prefix('Films')->group(function () {
-    Route::get('top_10', [FilmController::class, 'top_10'])->middleware('auth:sanctum');
-    Route::get('rate', [FilmController::class, 'rate'])->middleware('auth:sanctum');
-    Route::get('genre/{genre}', [FilmController::class, 'genre'])->middleware('auth:sanctum');
+    Route::get('new', [FilmController::class, 'new']);
+    Route::get('top_10', [FilmController::class, 'top_10']);
+    Route::get('rate', [FilmController::class, 'rate']);
+    Route::get('genre/{genre}', [FilmController::class, 'genre']);
     Route::get('/deleted', [FilmController::class, 'deleted'])->middleware('auth:sanctum');
-    Route::get('/', [FilmController::class, 'index'])->middleware('auth:sanctum');
+    Route::get('/', [FilmController::class, 'index']);
     Route::post('/store', [FilmController::class, 'store'])->middleware('auth:sanctum');
     Route::put('/update', [FilmController::class, 'update'])->middleware('auth:sanctum');
     Route::get('/{film}', [FilmController::class, 'show'])->middleware('auth:sanctum');
@@ -148,11 +150,12 @@ Route::prefix('FilmWatchings')->group(function () {
 
 //matches
 Route::prefix('Matches')->group(function () {
-    Route::get('top_10',  [MatchesController::class, 'top_10'])->middleware('auth:sanctum');
-    Route::get('rate',  [MatchesController::class, 'rate'])->middleware('auth:sanctum');
-    Route::get('champion/{champion}',  [MatchesController::class, 'champion'])->middleware('auth:sanctum');
+    Route::get('top_10',  [MatchesController::class, 'top_10']);
+    Route::get('new',  [MatchesController::class, 'new']);
+    Route::get('rate',  [MatchesController::class, 'rate']);
+    Route::get('champion/{champion}',  [MatchesController::class, 'champion']);
     Route::get('/deleted',  [MatchesController::class, 'deleted'])->middleware('auth:sanctum');
-    Route::get('/', [MatchesController::class, 'index'])->middleware('auth:sanctum');
+    Route::get('/', [MatchesController::class, 'index']);
     Route::put('/update', [MatchesController::class, 'update'])->middleware('auth:sanctum');
     Route::post('/store', [MatchesController::class, 'store'])->middleware('auth:sanctum');
     Route::get('/{matches}', [MatchesController::class, 'show'])->middleware('auth:sanctum');
@@ -175,7 +178,7 @@ Route::prefix('MatchWatchings')->group(function () {
 //Subscriptions
 Route::prefix('Subscriptions')->group(function () {
     Route::get('/deleted',  [SubscriptionController::class, 'deleted'])->middleware('auth:sanctum');
-    Route::get('/', [SubscriptionController::class, 'index'])->middleware('auth:sanctum');
+    Route::get('/', [SubscriptionController::class, 'index']);
     Route::post('/store', [SubscriptionController::class, 'store'])->middleware('auth:sanctum');
     Route::put('/update', [SubscriptionController::class, 'update'])->middleware('auth:sanctum');
     Route::get('/{subscription}', [SubscriptionController::class, 'show'])->middleware('auth:sanctum');

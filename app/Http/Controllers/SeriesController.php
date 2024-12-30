@@ -16,6 +16,15 @@ class SeriesController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function new()
+    {
+        $new = Series::with('genre', 'country')->orderBy('id', 'desc')->limit(15)->get();
+        if (count($new) != 0) {
+            return $this->response(code: 200, data: $new);
+        } else {
+            return $this->response(code: 404);
+        }
+    }
     public function top_10()
     {
         $top_10 = Series::with('genre', 'country')->get()->where('top_10', true);
