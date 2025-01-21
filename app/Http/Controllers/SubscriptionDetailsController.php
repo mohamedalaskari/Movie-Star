@@ -7,6 +7,7 @@ use App\Http\Requests\StoreSubscriptionDetailsRequest;
 use App\Http\Requests\StoreWhereSubscriptionRequest;
 use App\Http\Requests\UpdateSubscriptionDetailsRequest;
 use App\Models\Subscription;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Request;
 
@@ -29,7 +30,7 @@ class SubscriptionDetailsController extends Controller
     public function pay(StoreWhereSubscriptionRequest $request)
     {
         $request = $request->validated();
-        $Subscription = Subscription::all()->where('name', $request['name_old'])->first();
+        $Subscription = Subscription::all()->where('id', $request['id'])->first();
         $user = Auth::user();
         $User = $this->stripe->customers->create([
             'name' => $user['username'],
@@ -49,6 +50,10 @@ class SubscriptionDetailsController extends Controller
                     ],
                     'quantity' => 1,
                 ]
+            ],
+            'metadata' => [
+                //subscription_period
+                'subscription_id' => $Subscription['period'],
             ],
             'customer_email' => $user['email'],
             'mode' => 'payment',
@@ -88,11 +93,17 @@ class SubscriptionDetailsController extends Controller
             //subscription_id
             $subscription_id = $response->client_reference_id;
             $request['subscription_id'] = $subscription_id;
+            //expiry_date
+            $subscription_period = (int)$response->metadata['subscription_id'];
+            $expiry_date = Carbon::now()->addMonths(value: $subscription_period);
+            $Date = $expiry_date->format('Y-m-d');
             //insert_data
             $insert_data = SubscriptionDetails::create([
                 'user_id' => $user_id,
                 'subscription_id' => $subscription_id,
+                'expiry_date' => $Date
             ]);
+
             return $this->response(code: 201, msg: "Payment is successful");
         }
     }

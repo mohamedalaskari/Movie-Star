@@ -46,9 +46,9 @@ class SeriesController extends Controller
     public function genre($genre)
     {
         //get genre id
-        $genre_id = Genre::with('genre', 'country')->get()->where('genre', $genre)->first()->id;
+        $genre_id = Genre::get()->where('genre', $genre)->first()->id;
         //get serires where genre
-        $series = Series::all()->where('genre_id', $genre_id);
+        $series = Series::with('genre', 'country')->get()->where('genre_id', $genre_id);
         if ($series) {
             return $this->response(code: 200, data: $series);
         } else {
@@ -57,7 +57,7 @@ class SeriesController extends Controller
     }
     public function index()
     {
-        $Series = Series::paginate(30);
+        $Series = Series::with('genre', 'country')->paginate(15);
         return $this->response(code: 200, data: $Series);
     }
 

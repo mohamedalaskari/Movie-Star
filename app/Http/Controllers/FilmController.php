@@ -60,7 +60,7 @@ class FilmController extends Controller
     public function index()
     {
         $Film = Film::select(['id', 'image', 'story', 'quality', 'year_of_production', 'rate', 'top_10', 'country_id', 'genre_id', 'name', 'description'])
-            ->with('genre', 'country')->paginate(30);
+            ->with('genre', 'country')->paginate(15);
         return $this->response(code: 200, data: $Film);
     }
 

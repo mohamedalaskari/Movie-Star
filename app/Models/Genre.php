@@ -12,14 +12,14 @@ class Genre extends Model
     /** @use HasFactory<\Database\Factories\GenreFactory> */
     use HasFactory, SoftDeletes;
 
-    // protected  $guarded = [
-    //     'created_at',
-    //     'deleted_at',
-    //     'updated_at',
-    // ];
-    protected $fillable = [
-        'genre'
+    protected  $guarded = [
+        'created_at',
+        'deleted_at',
+        'updated_at',
     ];
+    // protected $fillable = [
+    //     'genre'
+    // ];
     protected $hidden = [
         'created_at',
         'deleted_at',

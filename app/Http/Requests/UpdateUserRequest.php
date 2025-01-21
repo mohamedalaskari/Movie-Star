@@ -3,15 +3,16 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
-class StoreWhereSubscriptionRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -22,7 +23,12 @@ class StoreWhereSubscriptionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => 'required|regex:/\d/|max:20|exists:subscriptions,id'
+            'image' => "image|max:1024|mimes:png,jpg",
+            'username' => 'required|string|max:30',
+            'age' => 'required|max:2|regex:/\d/',
+            'phone' => 'required|max:13|regex:/\d/|exists:users,phone',
+            'email' => 'required|max:40|email|exists:users,email',
+            'password' => 'required|confirmed|max:16|min:6'
         ];
     }
 }

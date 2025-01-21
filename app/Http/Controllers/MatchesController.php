@@ -58,7 +58,7 @@ class MatchesController extends Controller
     public function index()
     {
         $Matches = Matches::select(['id', 'image', 'rate', 'top_10', 'quality', 'story', 'year_of_production', 'stadium', 'team_1', 'team_1_logo', 'team_2', 'team_2_logo', 'champion', 'result', 'country_id'])
-            ->with('country')->paginate(30);
+            ->with('country')->paginate(15);
         return $this->response(code: 200, data: $Matches);
     }
 
