@@ -24,18 +24,24 @@ class UserController extends Controller
         $user = User::with('country', 'subscription_details', 'film_watchings', 'match_watchings', 'episode_watchings')->find($id);
         return $this->response(code: 200, data: $user);
     }
-    public function update(UpdateUserRequest $request, User $user, StoreWhereCountryRequest $storeWhereCountryRequest)
+    public function update(Request $request, UpdateUserRequest $Request, User $user, StoreWhereCountryRequest $storeWhereCountryRequest)
     {
-
-        $request = $request->validated();
+        //upload image 
+        $file = $request->File('image');
+        $request = $request->validate(['image' => 'image|mimes:png,jpg,jpeg|max:2048']);
+        $fileName = time() . '.' . $file->getClientOriginalName();
+        $path = $request['image']->storeAs('image', $fileName, 'public');
+        //validate data 
+        $Request = $Request->validated();
         $storeWhereCountryRequest = $storeWhereCountryRequest->validated();
         //user_id
         $user_id = Auth::user()->id;
         //country_id
         $country_id = Country::all()->where('country', $storeWhereCountryRequest['country'])->first()->id;
-        $request['country_id'] = $country_id;
+        $Request['country_id'] = $country_id;
+        $Request['image'] = $path;
         //update user
-        $update = DB::table('users')->where('id', $user_id)->update($request);
+        $update = DB::table('users')->where('id', $user_id)->update($Request);
         if ($update) {
             return $this->response(code: 201, data: $update);
         } else {

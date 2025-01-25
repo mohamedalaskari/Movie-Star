@@ -22,7 +22,6 @@ class StoreRegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => "image|max:1024|mimes:png,jpg",
             'username' => 'required|string|max:30',
             'age' => 'required|max:2|regex:/\d/',
             'phone' => 'required|max:13|regex:/\d/|unique:users,phone',

@@ -35,7 +35,7 @@ Route::prefix('Auth')->group(function () {
 Route::prefix('Users')->group(function () {
     Route::get('/', [UserController::class, 'index'])->middleware('auth:sanctum');
     Route::get('/{user}', [UserController::class, 'show'])->middleware('auth:sanctum');
-    Route::put('/update', [UserController::class, 'update'])->middleware('auth:sanctum');
+    Route::patch('/update', [UserController::class, 'update'])->middleware('auth:sanctum');
 });
 //country
 Route::prefix('Countries')->group(function () {

@@ -22,7 +22,7 @@ class StoreWhereCountryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'country' => 'required|max:20|min:2|exists:countries,country'
+            'country' => 'max:20|min:2|exists:countries,country'
         ];
     }
 }

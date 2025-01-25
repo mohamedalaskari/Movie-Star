@@ -12,7 +12,7 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::check();
+        return true;
     }
 
     /**
@@ -23,12 +23,11 @@ class UpdateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'image' => "image|max:1024|mimes:png,jpg",
-            'username' => 'required|string|max:30',
-            'age' => 'required|max:2|regex:/\d/',
-            'phone' => 'required|max:13|regex:/\d/|exists:users,phone',
-            'email' => 'required|max:40|email|exists:users,email',
-            'password' => 'required|confirmed|max:16|min:6'
+            'username' => 'string|max:30|min:3',
+            'age' => 'max:2|regex:/\d/',
+            'phone' => 'max:13|regex:/\d/|unique:users,phone',
+            'email' => 'max:40|email|unique:users,email',
+            'password' => 'max:16|min:6'
         ];
     }
 }

@@ -20,13 +20,20 @@ use Illuminate\Support\Str;
 class AuthController extends Controller
 {
 
-    public function Register(StoreRegisterRequest $Request, StoreWhereCountryRequest $country)
+    public function Register(request $request, StoreRegisterRequest $Request, StoreWhereCountryRequest $country)
     {
+        //validated
         $Request = $Request->validated();
+        //upload image 
+        $file = $request->File('image');
+        $request = $request->validate(['image' => 'image|mimes:png,jpg,jpeg|max:2048']);
+        $fileName = time() . '.' . $file->getClientOriginalName();
+        $path = $request['image']->storeAs('image', $fileName, 'public');
         //find country_id
         $country = $country->validated();
         $country_id = Country::all()->where('country', $country['country'])->first()->id;
         $Request['country_id'] = $country_id;
+        $Request['image'] = $path;
         //insert data
         $insert = User::create($Request);
         //check if user created
@@ -83,8 +90,8 @@ class AuthController extends Controller
         return $status === Password::RESET_LINK_SENT ? response()->json([
             'message' => __($status)
         ], 200) : response()->json([
-                        'message' => __($status)
-                    ], 400);
+            'message' => __($status)
+        ], 400);
     }
     public function reset_password(StoreResetPasswordRequest $request)
     {
