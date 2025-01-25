@@ -30,11 +30,10 @@ class UserController extends Controller
         //user_id
         $user_id = Auth::user()->id;
         //upload image 
-        // $file = $Request->hasFile('image');
-        // dd($file);
-        // $request = $request->validate(['image' => 'image|mimes:png,jpg,jpeg|max:2048']);
-        // $fileName = time() . '.' . $file->getClientOriginalName();
-        // $path = $request['image']->storeAs('image', $fileName, 'public');
+        $file = $Request->File('image');
+        $request = $Request->validate(['image' => 'image|mimes:png,jpg,jpeg|max:2048']);
+        $fileName = time() . '.' . $file->getClientOriginalName();
+        $path = $request['image']->storeAs('image', $fileName, 'public');
         //validate data 
         $Request = $Request->validate([
             'username' => 'nullable|string|max:30|min:3',
@@ -52,7 +51,7 @@ class UserController extends Controller
         //country_id
         $country_id = Country::all()->where('country', $storeWhereCountryRequest['country'])->first()->id;
         $Request['country_id'] = $country_id;
-        // $Request['image'] = $path;
+        $Request['image'] = $path;
         //update user
         $update = DB::table('users')->where('id', $user_id)->update($Request);
         if ($update) {

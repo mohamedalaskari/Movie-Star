@@ -42,6 +42,16 @@ class EpisodeController extends Controller
         $request = $request->validated();
         $Season = $Season->validated();
         $Series = $Series->validated();
+        //uplode image
+        $fileName = time() . '.' . $request['image']->getClientOriginalName();
+        $image_path = $request['image']->storeAs('image', $fileName, 'public');
+        $request['image'] = $image_path;
+        
+        //uplode episode
+        $episodename = time() . '.' . $request['episode_url']->getClientOriginalName();
+        $video_path = $request['episode_url']->storeAs('videos', $episodename, 'public');
+        
+        $request['episode_url'] = $video_path;
         //Series_id
         $Series_id = Series::all()->where('series_name', $Series['series_name'])->first()->id;
         //seasons_id
@@ -50,12 +60,13 @@ class EpisodeController extends Controller
             ['season_number', $Season['season_number']],
         ])->first()->id;
         $request['season_id'] = $season_id;
-        //insert data
+        //insert data   
         $insert = Episode::create([
             'episode_number' => $request['episode_number'],
             'description' => $request['description'],
             'episode_url' => $request['episode_url'],
             'season_id' => $request['season_id'],
+            'image' => $request['image']
         ]);
         //add num_of_seasons in table series
         $num_of_episodes = Season::all()->where('id', $insert['season_id'])->first()->num_of_episodes;
