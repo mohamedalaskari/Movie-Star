@@ -33,7 +33,7 @@ class UserController extends Controller
         $file = $Request->File('image');
         $request = $Request->validate(['image' => 'image|mimes:png,jpg,jpeg|max:2048']);
         $fileName = time() . '.' . $file->getClientOriginalName();
-        $path = $request['image']->storeAs('image', $fileName, 'public');
+        $path = $request['image']->storeAs('user_images', $fileName, 'public');
         //validate data 
         $Request = $Request->validate([
             'username' => 'nullable|string|max:30|min:3',

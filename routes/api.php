@@ -131,7 +131,7 @@ Route::prefix('Films')->group(function () {
     Route::get('/deleted', [FilmController::class, 'deleted'])->middleware('auth:sanctum');
     Route::get('/', [FilmController::class, 'index']);
     Route::post('/store', [FilmController::class, 'store'])->middleware('auth:sanctum');
-    Route::put('/update', [FilmController::class, 'update'])->middleware('auth:sanctum');
+    Route::post('/update', [FilmController::class, 'update'])->middleware('auth:sanctum');
     Route::get('/{film}', [FilmController::class, 'show'])->middleware('auth:sanctum');
     Route::get('restore/{film}', [FilmController::class, 'restore'])->middleware('auth:sanctum');
     Route::delete('delete/{film}', [FilmController::class, 'delete'])->middleware('auth:sanctum');

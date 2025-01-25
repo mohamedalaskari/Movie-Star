@@ -83,7 +83,7 @@ class FilmController extends Controller
         $genre = $genre->validated();
         //uplode film image
         $image = time() . '.' . $request['image']->getClientOriginalName();
-        $image_path = $request['image']->storeAs('film_images' , $image , 'public');
+        $image_path = $request['image']->storeAs('film_images', $image, 'public');
         $request['image'] = $image_path;
         //uplode film 
         $film_name = time() . '.' . $request['film_url']->getClientOriginalName();
@@ -91,8 +91,8 @@ class FilmController extends Controller
         $request['film_url'] = $film_path;
 
         //get country_id (the column name just be 'country' not 'country_id'!!!!!!!) 
-       $country_id = Country::all()->where('country' , $request['country_id'])->first()->id;
-       $request['country_id'] = $country_id;
+        $country_id = Country::all()->where('country', $request['country_id'])->first()->id;
+        $request['country_id'] = $country_id;
         //get genre_id
         $genre_id = Genre::all()->where('genre', $genre['genre'])->first()->id;
         //add genre_id to request
@@ -138,15 +138,33 @@ class FilmController extends Controller
         $request = $request->validated();
         $genre = $genre->validated();
         $film = $film->validated();
+
+        //update Film
+
+        $film = time() . '.' . $request['film_url']->getClientOriginalName();
+        $film_path = $request['film_url']->storeAs('Films', $film, 'public');
+        $request['film_url'] = $film_path;
+        //update image
+        $image = time() . '.' . $request['image']->getClientOriginalName();
+        $image_path = $request['image']->storeAs('user_images', $image, 'public');
+        $request['image'] = $image_path;
+        
         //find genre_id
         $genre_id = Genre::all()->where('genre', $genre['genre'])->first()->id;
         $request['genre_id'] = $genre_id;
         //update
-        $update = DB::table('films')->where('name', $film['name'])->update([
+        $update = DB::table('films')->where('name', $request['name'])->update([
             'description' => $request['description'],
-            'name' => $request['name_new'],
             'film_url' => $request['film_url'],
-            'genre_id' => $request['genre_id']
+            'genre_id' => $request['genre_id'],
+            'story' => $request['story'],
+            'quality' => $request['quality'],
+            'year_of_production' => $request['year_of_production'],
+            'rate' => $request['rate'],
+            'top_10' => $request['top_10'],
+            'country_id' => $request['country_id'],
+            'image'=>$request['image'],
+            'name'=>$request['new_name']
         ]);
         //check if updated
         if ($update) {
