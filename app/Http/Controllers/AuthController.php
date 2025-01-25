@@ -8,6 +8,7 @@ use App\Http\Requests\StoreRegisterRequest;
 use App\Http\Requests\StoreResetPasswordRequest;
 use App\Http\Requests\StoreWhereCountryRequest;
 use App\Models\Country;
+use App\Models\SubscriptionDetails;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -56,6 +57,9 @@ class AuthController extends Controller
                 $user = Auth::user();
                 $token = $user->createToken('front-end', [$user->role], Carbon::now()->addDays(7))->plainTextToken;
                 $user['token'] = $token;
+                //user have subscription
+                $subscription = SubscriptionDetails::all()->where('user_id', $user['id'])->first();
+                $user['subscription'] = $subscription;
                 return $this->response(code: 200, data: $user);
             } else {
                 return $this->response(code: 401);

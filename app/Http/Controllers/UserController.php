@@ -9,6 +9,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -24,22 +25,34 @@ class UserController extends Controller
         $user = User::with('country', 'subscription_details', 'film_watchings', 'match_watchings', 'episode_watchings')->find($id);
         return $this->response(code: 200, data: $user);
     }
-    public function update(Request $request, UpdateUserRequest $Request, User $user, StoreWhereCountryRequest $storeWhereCountryRequest)
+    public function update(Request $Request, User $user, StoreWhereCountryRequest $storeWhereCountryRequest)
     {
-        //upload image 
-        $file = $request->File('image');
-        $request = $request->validate(['image' => 'image|mimes:png,jpg,jpeg|max:2048']);
-        $fileName = time() . '.' . $file->getClientOriginalName();
-        $path = $request['image']->storeAs('image', $fileName, 'public');
-        //validate data 
-        $Request = $Request->validated();
-        $storeWhereCountryRequest = $storeWhereCountryRequest->validated();
         //user_id
         $user_id = Auth::user()->id;
+        //upload image 
+        // $file = $Request->hasFile('image');
+        // dd($file);
+        // $request = $request->validate(['image' => 'image|mimes:png,jpg,jpeg|max:2048']);
+        // $fileName = time() . '.' . $file->getClientOriginalName();
+        // $path = $request['image']->storeAs('image', $fileName, 'public');
+        //validate data 
+        $Request = $Request->validate([
+            'username' => 'nullable|string|max:30|min:3',
+            'age' => 'nullable|max:2|regex:/\d/',
+            'phone' => "nullable|max:13|regex:/\d/|unique:users,phone,$user_id,id",
+            'email' => "nullable|max:40|email|unique:users,email,$user_id,id",
+            'password' => 'nullable|max:16|min:6'
+        ]);
+
+        if (!empty($Request['password'])) {
+            $Request['password'] = Hash::make($Request['password']);
+        }
+
+        $storeWhereCountryRequest = $storeWhereCountryRequest->validated();
         //country_id
         $country_id = Country::all()->where('country', $storeWhereCountryRequest['country'])->first()->id;
         $Request['country_id'] = $country_id;
-        $Request['image'] = $path;
+        // $Request['image'] = $path;
         //update user
         $update = DB::table('users')->where('id', $user_id)->update($Request);
         if ($update) {
