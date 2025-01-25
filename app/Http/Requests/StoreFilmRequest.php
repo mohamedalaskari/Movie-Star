@@ -24,7 +24,14 @@ class StoreFilmRequest extends FormRequest
         return [
             'description'=>'required|string|max:150',
             'name'=>'required|string|max:30',
-            'film_url'=>'required|url|max:1024',
+            'film_url'=>'required|max:1024|file',
+            'image' => 'file',
+            'story' => 'required' , 
+            'quality' => 'required',
+            'year_of_production' =>'required',
+            'rate' => 'required' ,
+            'top_10' => 'required',
+            'country_id' => 'required|exists:countries,country'
         ];
     }
 }

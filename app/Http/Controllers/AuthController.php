@@ -26,10 +26,8 @@ class AuthController extends Controller
         //validated
         $Request = $Request->validated();
         //upload image 
-        $file = $request->File('image');
-        $request = $request->validate(['image' => 'image|mimes:png,jpg,jpeg|max:2048']);
-        $fileName = time() . '.' . $file->getClientOriginalName();
-        $path = $request['image']->storeAs('image', $fileName, 'public');
+        $fileName = time() . '.' . $request['image']->getClientOriginalName();
+        $path = $request['image']->storeAs('user_images', $fileName, 'public');
         //find country_id
         $country = $country->validated();
         $country_id = Country::all()->where('country', $country['country'])->first()->id;

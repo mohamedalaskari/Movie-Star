@@ -44,12 +44,12 @@ class EpisodeController extends Controller
         $Series = $Series->validated();
         //uplode image
         $fileName = time() . '.' . $request['image']->getClientOriginalName();
-        $image_path = $request['image']->storeAs('image', $fileName, 'public');
+        $image_path = $request['image']->storeAs('episode_images', $fileName, 'public');
         $request['image'] = $image_path;
         
         //uplode episode
         $episodename = time() . '.' . $request['episode_url']->getClientOriginalName();
-        $video_path = $request['episode_url']->storeAs('videos', $episodename, 'public');
+        $video_path = $request['episode_url']->storeAs('episodes', $episodename, 'public');
         
         $request['episode_url'] = $video_path;
         //Series_id

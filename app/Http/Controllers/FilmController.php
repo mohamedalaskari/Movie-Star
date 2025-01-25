@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 
 use App\Http\Requests\StoreWhereGenreRequest;
+use App\Models\Country;
 use App\Models\Film;
 use App\Http\Requests\StoreFilmRequest;
 use App\Http\Requests\StoreWhereFilmRequest;
 use App\Http\Requests\UpdateFilmRequest;
 use App\Models\Genre;
 
+use Auth;
 use Illuminate\Support\Facades\DB;
 
 class FilmController extends Controller
@@ -79,6 +81,18 @@ class FilmController extends Controller
     {
         $request = $request->validated();
         $genre = $genre->validated();
+        //uplode film image
+        $image = time() . '.' . $request['image']->getClientOriginalName();
+        $image_path = $request['image']->storeAs('film_images' , $image , 'public');
+        $request['image'] = $image_path;
+        //uplode film 
+        $film_name = time() . '.' . $request['film_url']->getClientOriginalName();
+        $film_path = $request['film_url']->storeAs('Films', $film_name, 'public');
+        $request['film_url'] = $film_path;
+
+        //get country_id (the column name just be 'country' not 'country_id'!!!!!!!) 
+       $country_id = Country::all()->where('country' , $request['country_id'])->first()->id;
+       $request['country_id'] = $country_id;
         //get genre_id
         $genre_id = Genre::all()->where('genre', $genre['genre'])->first()->id;
         //add genre_id to request

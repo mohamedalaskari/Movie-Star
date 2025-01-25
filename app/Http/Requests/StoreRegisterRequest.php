@@ -26,7 +26,8 @@ class StoreRegisterRequest extends FormRequest
             'age' => 'required|max:2|regex:/\d/',
             'phone' => 'required|max:13|regex:/\d/|unique:users,phone',
             'email' => 'required|max:40|email|unique:users,email',
-            'password' => 'required|confirmed|max:16|min:6'
+            'password' => 'required|confirmed|max:16|min:6',
+            'image' => 'file|image|mimes:png,jpg,jpeg|max:2048'
         ];
     }
 }
