@@ -7,6 +7,7 @@ use App\Http\Requests\StoreWhereGenreRequest;
 use App\Models\Country;
 use App\Models\Film;
 use App\Http\Requests\StoreFilmRequest;
+use App\Http\Requests\StoreWhereCountryRequest;
 use App\Http\Requests\StoreWhereFilmRequest;
 use App\Http\Requests\UpdateFilmRequest;
 use App\Models\Genre;
@@ -77,10 +78,11 @@ class FilmController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreFilmRequest $request, StoreWhereGenreRequest $genre)
+    public function store(StoreFilmRequest $request, StoreWhereGenreRequest $genre, StoreWhereCountryRequest $storeWhereCountryRequest)
     {
         $request = $request->validated();
         $genre = $genre->validated();
+        $storeWhereCountryRequest = $storeWhereCountryRequest->validated();
         //uplode film image
         $image = time() . '.' . $request['image']->getClientOriginalName();
         $image_path = $request['image']->storeAs('film_images', $image, 'public');
@@ -90,8 +92,8 @@ class FilmController extends Controller
         $film_path = $request['film_url']->storeAs('Films', $film_name, 'public');
         $request['film_url'] = $film_path;
 
-        //get country_id (the column name just be 'country' not 'country_id'!!!!!!!) 
-        $country_id = Country::all()->where('country', $request['country_id'])->first()->id;
+        //get country_id 
+        $country_id = Country::all()->where('country', $storeWhereCountryRequest['country'])->first()->id;
         $request['country_id'] = $country_id;
         //get genre_id
         $genre_id = Genre::all()->where('genre', $genre['genre'])->first()->id;
@@ -133,14 +135,14 @@ class FilmController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateFilmRequest $request, StoreWhereGenreRequest $genre, StoreWhereFilmRequest $film)
+    public function update(UpdateFilmRequest $request, StoreWhereGenreRequest $genre, StoreWhereFilmRequest $Film, StoreWhereCountryRequest $storeWhereCountryRequest)
     {
         $request = $request->validated();
         $genre = $genre->validated();
-        $film = $film->validated();
+        $Film = $Film->validated();
+        $storeWhereCountryRequest = $storeWhereCountryRequest->validated();
 
         //update Film
-
         $film = time() . '.' . $request['film_url']->getClientOriginalName();
         $film_path = $request['film_url']->storeAs('Films', $film, 'public');
         $request['film_url'] = $film_path;
@@ -148,24 +150,14 @@ class FilmController extends Controller
         $image = time() . '.' . $request['image']->getClientOriginalName();
         $image_path = $request['image']->storeAs('user_images', $image, 'public');
         $request['image'] = $image_path;
-        
+        //get country_id 
+        $country_id = Country::all()->where('country', $storeWhereCountryRequest['country'])->first()->id;
+        $request['country_id'] = $country_id;
         //find genre_id
         $genre_id = Genre::all()->where('genre', $genre['genre'])->first()->id;
         $request['genre_id'] = $genre_id;
         //update
-        $update = DB::table('films')->where('name', $request['name'])->update([
-            'description' => $request['description'],
-            'film_url' => $request['film_url'],
-            'genre_id' => $request['genre_id'],
-            'story' => $request['story'],
-            'quality' => $request['quality'],
-            'year_of_production' => $request['year_of_production'],
-            'rate' => $request['rate'],
-            'top_10' => $request['top_10'],
-            'country_id' => $request['country_id'],
-            'image'=>$request['image'],
-            'name'=>$request['new_name']
-        ]);
+        $update = DB::table('films')->where('name', $Film['name_old'])->update($request);
         //check if updated
         if ($update) {
             return $this->response(code: 200, data: $update);

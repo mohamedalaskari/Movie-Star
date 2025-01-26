@@ -23,17 +23,14 @@ class UpdateFilmRequest extends FormRequest
     {
         return [
             'description' => 'required',
-            'name' => 'required',
-            'genre' => 'required',
             'story' => 'required',
             'quality' => 'required',
             'year_of_production' => 'required',
             'rate' => 'required',
             'top_10' => 'required',
-            'country_id' => 'required',
             'film_url' => 'required|max:1024|file',
             'image' => 'file',
-            'new_name' => 'required'
+            'name' => 'required'
 
         ];
     }

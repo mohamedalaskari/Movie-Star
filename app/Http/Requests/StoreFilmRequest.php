@@ -22,16 +22,15 @@ class StoreFilmRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'description'=>'required|string|max:150',
-            'name'=>'required|string|max:30',
-            'film_url'=>'required|max:1024|file',
+            'description' => 'required|string|max:150',
+            'name' => 'required|string|max:30',
+            'film_url' => 'required|max:1024|file',
             'image' => 'file',
-            'story' => 'required' , 
+            'story' => 'required',
             'quality' => 'required',
-            'year_of_production' =>'required',
-            'rate' => 'required' ,
+            'year_of_production' => 'required',
+            'rate' => 'required',
             'top_10' => 'required',
-            'country_id' => 'required|exists:countries,country'
         ];
     }
 }

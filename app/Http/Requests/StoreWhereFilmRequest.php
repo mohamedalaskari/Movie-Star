@@ -22,7 +22,7 @@ class StoreWhereFilmRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required|max:40|string'
+            'name_old' => 'required|max:40|string'
         ];
     }
 }

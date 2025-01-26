@@ -17,9 +17,7 @@ class Genre extends Model
         'deleted_at',
         'updated_at',
     ];
-    // protected $fillable = [
-    //     'genre'
-    // ];
+
     protected $hidden = [
         'created_at',
         'deleted_at',
